@@ -1,0 +1,15 @@
+{
+  "name": "ecoride-monorepo",
+  "private": true,
+  "packageManager": "pnpm@9",
+  "scripts": {
+    "dev": "concurrently -n web,api -c blue,magenta \"pnpm -C apps/web dev\" \"pnpm -C apps/api start:dev\"",
+    "build": "pnpm -C apps/web build && pnpm -C apps/api build",
+    "lint": "eslint .",
+    "test": "pnpm -C apps/web test && pnpm -C apps/api test"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "eslint": "^9.0.0"
+  }
+}
