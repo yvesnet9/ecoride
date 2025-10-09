@@ -1,1 +1,9 @@
+<<<<<<< HEAD
 node_modules
+=======
+node_modules
+.env
+.env.*
+dist
+coverage
+>>>>>>> 0b0962ff905b48ba92a3881220d46a203c2850fd

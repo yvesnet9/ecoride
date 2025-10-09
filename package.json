@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "api",
   "version": "0.0.1",
   "description": "Ecoride API Backend",
@@ -74,5 +75,19 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+=======
+  "name": "ecoride-monorepo",
+  "private": true,
+  "packageManager": "pnpm@9",
+  "scripts": {
+    "dev": "concurrently -n web,api -c blue,magenta \"pnpm -C apps/web dev\" \"pnpm -C apps/api start:dev\"",
+    "build": "pnpm -C apps/web build && pnpm -C apps/api build",
+    "lint": "eslint .",
+    "test": "pnpm -C apps/web test && pnpm -C apps/api test"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "eslint": "^9.0.0"
+>>>>>>> 0b0962ff905b48ba92a3881220d46a203c2850fd
   }
 }
