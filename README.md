@@ -35,3 +35,15 @@ Face à ce constat, **Ecoride** a été imaginée comme une **plateforme moderne
 - Aux développeurs et designers d’explorer une approche **technologique innovante** du covoiturage.
 
 💚 Ce projet s’inscrit dans une démarche de **transition écologique**, alliant technologie, mobilité et responsabilité environnementale.
+---
+
+## 👥 1.4 Public cible et utilisateurs visés
+
+La plateforme **Ecoride** s’adresse à un large public, composé de plusieurs profils complémentaires :
+
+- 👨‍💼 **Les particuliers actifs** : souhaitant partager leurs trajets quotidiens (domicile ↔ travail) pour réduire les coûts et leur empreinte carbone.  
+- 🏫 **Les étudiants** : en recherche de solutions économiques et conviviales pour se déplacer entre le campus et leur logement.  
+- 🏢 **Les entreprises et collectivités locales** : désireuses d’encourager la mobilité verte auprès de leurs employés.  
+- 🌍 **Les associations écologiques** : qui peuvent utiliser la plateforme pour promouvoir des initiatives de covoiturage responsable.  
+
+L’objectif est de **rassembler ces utilisateurs autour d’une même vision : se déplacer autrement, ensemble, et durablement.**
