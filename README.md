@@ -20,3 +20,18 @@ Le projet **Ecoride** vise à :
 - 🧭 Offrir une plateforme **simple, intuitive et interactive**, accessible sur ordinateur et mobile.  
 
 En résumé, Ecoride permet de **voyager ensemble, plus vert et plus malin.**
+---
+
+## 💡 1.3 Contexte et motivation
+
+Aujourd’hui, la mobilité urbaine fait face à plusieurs défis :
+- 🚗 Une circulation toujours plus dense et une pollution croissante.  
+- ⛽ Une dépendance forte aux carburants fossiles.  
+- 🕐 Une perte de temps quotidienne pour les trajets domicile-travail.
+
+Face à ce constat, **Ecoride** a été imaginée comme une **plateforme moderne et écoresponsable** permettant :
+- Aux citoyens de **partager leurs trajets** et de réduire leurs coûts de transport.  
+- Aux entreprises et collectivités de **promouvoir des pratiques durables**.  
+- Aux développeurs et designers d’explorer une approche **technologique innovante** du covoiturage.
+
+💚 Ce projet s’inscrit dans une démarche de **transition écologique**, alliant technologie, mobilité et responsabilité environnementale.
