@@ -83,3 +83,84 @@ Le projet **Ecoride** repose sur une architecture **Full-Stack JavaScript modern
 - **Documentation :** Markdown (`README.md`) et export PDF pour le jury
 
 💡 Cette stack garantit une application **rapide, évolutive et écologique** dans son approche technique.
+---
+
+## 🚀 1.6 Fonctionnalités principales
+
+### 🧩 Présentation générale
+**Ecoride** est une application web complète permettant :
+- aux utilisateurs de s’inscrire et de gérer leurs informations,
+- d’ajouter et consulter des trajets partagés,
+- et de cumuler automatiquement des **écoPoints** proportionnels à la distance parcourue 🌱.
+
+---
+
+### 💻 Front-end (React + Framer Motion)
+L’interface utilisateur a été pensée pour être **fluide, responsive et moderne**, grâce à React et à des animations douces avec **Framer Motion**.
+
+#### ✅ Pages principales :
+1. **HomePage** – Page d’accueil  
+   - Présentation du concept et bouton d’accès au tableau de bord  
+   - Animation d’apparition du titre et du bouton (fade-in + slide)  
+   - Couleurs douces (#2e7d32 – vert Ecoride)
+
+2. **Dashboard** – Tableau de bord principal  
+   - Affiche la liste des utilisateurs et des trajets  
+   - Permet d’ajouter un **nouvel utilisateur** via un formulaire (nom + email)  
+   - Permet d’ajouter un **nouveau trajet** (origine, destination, distance)  
+   - Calcule automatiquement les **écoPoints** :  
+     🧮 `écoPoints = distanceKm × 2`  
+   - Animation des cartes, boutons et transitions (Framer Motion)
+
+3. **AboutPage** – Page “À propos”  
+   - Présentation du projet, de sa mission écologique et des technologies utilisées  
+   - Navigation fluide et cohérente avec le reste du site
+
+4. **Navbar (commune)**  
+   - Navigation fluide entre les pages  
+   - Animation “soulignement vert” au survol  
+   - Logo Ecoride animé (fade-in léger à l’arrivée sur chaque page)
+
+5. **Loader** (animation de chargement)  
+   - Affiche une petite **feuille tournante 🌿** ou le logo Ecoride animé  
+   - Apparition lors du lancement initial de l’app
+
+---
+
+### 🛠️ Back-end (Express + MongoDB)
+Le serveur Express constitue le cœur de la logique métier de l’application.
+
+#### ⚙️ Routes principales :
+- **GET `/users`** → Récupère la liste des utilisateurs  
+- **POST `/users`** → Ajoute un nouvel utilisateur (nom, email, ecoPoints=0)  
+- **GET `/trips`** → Récupère la liste des trajets  
+- **POST `/trips`** → Ajoute un trajet et calcule les écoPoints correspondants
+
+#### 🧮 Exemple d’ajout de trajet :
+```json
+POST /trips
+{
+  "user": "64e0b1b6c5e9a6c85f123456",
+  "origin": "Paris",
+  "destination": "Versailles",
+  "distanceKm": 25
+}
+➡️ Le serveur calcule : ecoPoints = 25 × 2 = 50 pts
+➡️ Les points sont ajoutés à l’utilisateur concerné.
+
+🔐 Sécurité :
+
+CORS activé pour permettre la communication front ↔ back
+
+Variables sensibles (URI MongoDB, PORT) stockées dans .env
+
+Gestion des erreurs côté API (try/catch, statuts HTTP)
+
+🌍 Résumé technique global
+Élément	Description
+Front-end	React + TypeScript + Framer Motion
+Back-end	Node.js + Express
+Base de données	MongoDB Atlas
+Animations	Framer Motion
+Connexion API	Fetch (HTTP) entre localhost:5173 ↔ localhost:3000
+Design Vert écoresponsable (#2e7d32), sobre et moderne
