@@ -47,3 +47,39 @@ La plateforme **Ecoride** s’adresse à un large public, composé de plusieurs 
 - 🌍 **Les associations écologiques** : qui peuvent utiliser la plateforme pour promouvoir des initiatives de covoiturage responsable.  
 
 L’objectif est de **rassembler ces utilisateurs autour d’une même vision : se déplacer autrement, ensemble, et durablement.**
+---
+
+## ⚙️ 1.5 Stack technique et outils utilisés
+
+Le projet **Ecoride** repose sur une architecture **Full-Stack JavaScript moderne**, combinant performance, modularité et maintenabilité.
+
+### 🧠 Front-end
+- **Framework :** React (avec Vite pour un démarrage rapide)
+- **Langage :** TypeScript (sécurité et clarté du code)
+- **Animations :** Framer Motion pour des transitions fluides
+- **Routing :** React Router DOM
+- **Gestion de l’état :** Hooks (`useState`, `useEffect`)
+- **UI :** TailwindCSS (pour un design sobre et responsive)
+
+### ⚙️ Back-end
+- **Serveur :** Express.js  
+- **Langage :** Node.js  
+- **Base de données :** MongoDB Atlas (connexion cloud sécurisée)  
+- **ORM / ODM :** Mongoose  
+- **Middleware :** CORS, JSON, dotenv (gestion des variables d’environnement)  
+- **Architecture :** API REST structurée (routes, contrôleurs, modèles)
+
+### 🗄️ Base de données
+- Hébergée sur **MongoDB Atlas**
+- Collections :
+  - `users` : nom, email, écoPoints
+  - `trips` : utilisateur, origine, destination, distance, écoPoints associés
+
+### 🧰 Outils de développement
+- **IDE :** Visual Studio Code  
+- **Contrôle de version :** Git & GitHub  
+- **Gestion de projet :** Trello (suivi des tâches et sprints Agile)  
+- **Terminal :** WSL2 (Ubuntu)  
+- **Documentation :** Markdown (`README.md`) et export PDF pour le jury
+
+💡 Cette stack garantit une application **rapide, évolutive et écologique** dans son approche technique.
