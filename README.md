@@ -223,3 +223,246 @@ La base MongoDB contient deux collections principales :
 │ ├── diagramme_sequence.png
 │ └── schema_bdd.png
 └── Ecoride_Rapport_Jury_2025.pdf
+Liste des diagrammes UML à générer
+1️⃣ Diagramme de cas d’utilisation
+
+🎯 Objectif : montrer ce que peut faire un utilisateur dans ton application.
+
+Acteurs :
+
+Utilisateur
+
+Cas d’utilisation principaux :
+
+Créer un compte
+
+Se connecter
+
+Ajouter un trajet
+
+Consulter ses trajets
+
+Gagner des écoPoints
+
+Voir le tableau de bord
+
+📁 Nom du fichier → /docs/UML/diagramme_cas_utilisation.png
+
+2️⃣ Diagramme de séquence
+
+🎯 Objectif : illustrer le déroulement technique d’un ajout de trajet (front → back → base de données).
+
+Participants :
+
+Utilisateur
+
+Interface React (Front-end)
+
+Serveur Express (Back-end)
+
+MongoDB (Base de données)
+
+Étapes principales :
+
+L’utilisateur saisit un trajet et valide.
+
+React envoie une requête POST vers /trips.
+
+Express reçoit la requête, calcule les écoPoints.
+
+Express enregistre le trajet dans MongoDB.
+
+MongoDB confirme la sauvegarde.
+
+Express renvoie une réponse JSON.
+
+React met à jour l’interface (trajet + points).
+
+📁 Nom du fichier → /docs/UML/diagramme_sequence.png
+
+3️⃣ Schéma de la base de données
+
+🎯 Objectif : montrer la structure MongoDB et les relations entre collections.
+
+Collections :
+
+users
+
+_id
+
+name
+
+email
+
+ecoPoints
+
+trips
+
+_id
+
+user (référence à users._id)
+
+origin
+
+destination
+
+distanceKm
+
+ecoPoints
+
+📁 Nom du fichier → /docs/UML/schema_bdd.png
+Liste des diagrammes UML à générer
+1️⃣ Diagramme de cas d’utilisation
+
+🎯 Objectif : montrer ce que peut faire un utilisateur dans ton application.
+
+Acteurs :
+
+Utilisateur
+
+Cas d’utilisation principaux :
+
+Créer un compte
+
+Se connecter
+
+Ajouter un trajet
+
+Consulter ses trajets
+
+Gagner des écoPoints
+
+Voir le tableau de bord
+
+📁 Nom du fichier → /docs/UML/diagramme_cas_utilisation.png
+
+2️⃣ Diagramme de séquence
+
+🎯 Objectif : illustrer le déroulement technique d’un ajout de trajet (front → back → base de données).
+
+Participants :
+
+Utilisateur
+
+Interface React (Front-end)
+
+Serveur Express (Back-end)
+
+MongoDB (Base de données)
+
+Étapes principales :
+
+L’utilisateur saisit un trajet et valide.
+
+React envoie une requête POST vers /trips.
+
+Express reçoit la requête, calcule les écoPoints.
+
+Express enregistre le trajet dans MongoDB.
+
+MongoDB confirme la sauvegarde.
+
+Express renvoie une réponse JSON.
+
+React met à jour l’interface (trajet + points).
+
+📁 Nom du fichier → /docs/UML/diagramme_sequence.png
+
+3️⃣ Schéma de la base de données
+
+🎯 Objectif : montrer la structure MongoDB et les relations entre collections.
+
+Collections :
+
+users
+
+_id
+
+name
+
+email
+
+ecoPoints
+
+trips
+
+_id
+
+user (référence à users._id)
+
+origin
+
+destination
+
+distanceKm
+
+ecoPoints
+
+📁 Nom du fichier → /docs/UML/schema_bdd.png
+🧩 F1.8 – Gestion de projet
+🔧 Méthodologie utilisée : Agile / Kanban
+
+Le projet Ecoride a été mené selon une approche Agile, centrée sur des itérations courtes et des objectifs précis à chaque étape.
+Un tableau Trello a été utilisé pour planifier et suivre les tâches, réparties selon les colonnes suivantes :
+
+📋 À faire (Backlog) : fonctionnalités prévues (authentification, ajout trajet, etc.)
+
+⚙️ En cours : tâches en développement
+
+✅ Terminées : fonctionnalités validées et testées
+
+📌 Lien Trello : https://trello.com/b/zyLTb7rW/mon-tableau-trello
+
+💻 Gestion de version : Git & GitHub
+
+Le code source complet est hébergé sur GitHub, avec un système de branches fonctionnelles pour faciliter la collaboration et la lisibilité du travail.
+
+📂 Lien GitHub : https://github.com/yvesnet9/ecoride
+
+🔀 Convention des branches :
+Branche	Description
+main	Code stable, version finale validée
+dev	Intégration des fonctionnalités avant merge
+feature/homepage	Développement de la page d’accueil
+feature/dashboard	Gestion du tableau de bord
+feature/api-users	API des utilisateurs
+feature/api-trips	API des trajets
+🧩 Convention des commits :
+
+Chaque sauvegarde Git est associée à une étape du livrable :
+
+F1.1 – Titre et présentation du projet 🌱
+
+F1.2 – Objectifs du projet
+
+F1.3 – Contexte et motivation
+
+F1.4 – Public cible
+
+F1.5 – Stack technique
+
+F1.6 – Fonctionnalités principales
+
+F1.7 – Maquettes & diagrammes UML
+
+🧭 Historique des merges
+
+Chaque fonctionnalité développée dans une branche feature/... a été testée puis fusionnée dans la branche main après validation :
+
+✅ feature/homepage → main
+
+✅ feature/dashboard → main
+
+✅ feature/api-users → main
+
+✅ feature/api-trips → main
+
+🧠 Avantages de cette approche
+
+Suivi clair de la progression
+
+Historique Git propre et documenté
+
+Tests fonctionnels par bloc avant intégration finale
+
+Organisation conforme à une méthode de travail professionnelle
