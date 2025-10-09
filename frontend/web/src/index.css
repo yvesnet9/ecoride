@@ -1,0 +1,48 @@
+/* ✅ CSS global — plein écran, sans marges ni contraintes */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+  background-color: #f5f7f4;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ✅ Le contenu React prend toute la largeur */
+#root {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+/* ✅ Forcer plein écran et suppression des marges globales */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  min-width: 100vw;
+  max-width: 100vw;
+  overflow-x: hidden;
+  background-color: #f5f7f4;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ✅ Supprimer tout centrage par défaut */
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+/* ✅ Si Vite ou React applique un centrage automatique */
+#root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+}

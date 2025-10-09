@@ -1,0 +1,31 @@
+/* === Ecoride PDF Style === */
+@page {
+  margin: 2cm;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f9fff9; /* vert clair */
+  color: #222;
+}
+
+h1,
+h2,
+h3 {
+  color: #2e7d32; /* vert Ecoride */
+  font-weight: bold;
+}
+
+pre,
+code {
+  background: #e8f5e9; /* fond vert pâle */
+  border-radius: 5px;
+  padding: 4px 6px;
+  font-size: 13px;
+}
+
+img.ecoride-logo {
+  display: block;
+  margin: 0 auto 20px auto;
+  width: 80px;
+}
