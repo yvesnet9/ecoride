@@ -164,3 +164,62 @@ Base de données	MongoDB Atlas
 Animations	Framer Motion
 Connexion API	Fetch (HTTP) entre localhost:5173 ↔ localhost:3000
 Design Vert écoresponsable (#2e7d32), sobre et moderne
+---
+
+## 🧩 1.7 Maquettes, diagrammes UML et wireframes
+
+Avant le développement, une phase de **conception visuelle et technique** a été réalisée pour garantir la cohérence et la fluidité du projet **Ecoride**.
+
+### 🎨 Maquettes & Wireframes
+Les premières maquettes ont été réalisées avec **Figma**, afin de visualiser la structure et le design général de l’application :
+
+- 🏠 **Page d’accueil (Home)** : message d’introduction, bouton “Accéder au tableau de bord”.  
+- 📊 **Dashboard** : affichage des utilisateurs, trajets et formulaires d’ajout.  
+- ℹ️ **Page “À propos”** : présentation du projet et lien vers les ressources.  
+
+Les maquettes suivent la **charte graphique verte Ecoride** :
+- Couleur principale : `#2e7d32` (vert écoresponsable)
+- Couleur secondaire : `#e8f5e9` (fond clair et écologique)
+- Police : *Poppins* (lisible et moderne)
+
+Les images des maquettes sont disponibles dans le dossier :
+📂 `/docs/maquettes/`
+
+### 📊 Diagrammes UML
+
+#### 1️⃣ Diagramme de cas d’utilisation
+Ce diagramme montre les interactions principales entre les utilisateurs et le système :
+- Créer un compte utilisateur  
+- Ajouter un trajet  
+- Consulter la liste des trajets  
+- Accumuler des écoPoints  
+
+📁 Fichier : `/docs/UML/diagramme_cas_utilisation.png`
+
+#### 2️⃣ Diagramme de séquence
+Il illustre la communication entre le **Front-end**, le **Serveur Express**, et la **Base MongoDB** :
+- L’utilisateur soumet un formulaire via React  
+- Le front envoie une requête HTTP POST  
+- Le back (Express) crée une entrée dans MongoDB  
+- Une réponse JSON est renvoyée au front pour mise à jour de l’interface  
+
+📁 Fichier : `/docs/UML/diagramme_sequence.png`
+
+#### 3️⃣ Schéma de la base de données
+La base MongoDB contient deux collections principales :
+- **users** (nom, email, ecoPoints)
+- **trips** (user_id, origin, destination, distanceKm, ecoPoints)
+
+📁 Fichier : `/docs/UML/schema_bdd.png`
+
+### 🗂️ Organisation du dossier `/docs/`
+/docs/
+├── maquettes/
+│ ├── homepage.png
+│ ├── dashboard.png
+│ └── about.png
+├── UML/
+│ ├── diagramme_cas_utilisation.png
+│ ├── diagramme_sequence.png
+│ └── schema_bdd.png
+└── Ecoride_Rapport_Jury_2025.pdf
