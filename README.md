@@ -466,3 +466,70 @@ Historique Git propre et documenté
 Tests fonctionnels par bloc avant intégration finale
 
 Organisation conforme à une méthode de travail professionnelle
+
+🧪 1️⃣ Tests
+
+Pour ce projet, les tests manuels ont été réalisés sur chaque fonctionnalité principale :
+
+✅ Ajout d’un utilisateur
+
+✅ Ajout d’un trajet et calcul automatique des écoPoints
+
+✅ Vérification de la persistance des données dans MongoDB
+
+✅ Navigation entre les pages et animations Framer Motion
+
+✅ Vérification du chargement API (status ✅ / ❌ affiché à l’écran)
+
+🧰 Outils utilisés :
+
+Console navigateur (pour inspecter les requêtes API)
+
+Postman (pour tester les routes GET, POST, DELETE)
+
+MongoDB Atlas (pour valider les enregistrements en base)
+
+🔐 2️⃣ Sécurité
+
+Les variables sensibles (URL MongoDB, PORT) sont stockées dans un fichier .env
+
+Les requêtes CORS sont autorisées uniquement depuis le frontend (localhost:5173)
+
+Les mots de passe MongoDB ne sont jamais exposés dans le code
+
+Les dépendances sont maintenues à jour (npm audit fix)
+
+🧹 3️⃣ Bonnes pratiques
+
+Architecture claire : frontend/ + backend-express/
+
+Code commenté et indenté (normes ESLint / Prettier)
+
+Nommage cohérent : composants React en PascalCase
+
+Respect de la séparation des responsabilités (Front ↔ API ↔ DB)
+
+Commit Git descriptifs et horodatés (ex: F1.6 – Fonctionnalités principales)
+
+💬 4️⃣ Exemple de vérification API (Postman)
+
+Route : POST /trips
+Corps :
+
+{
+  "user": "65a2dce4a9c1f9f5bfa1d234",
+  "origin": "Paris",
+  "destination": "Lyon",
+  "distanceKm": 465
+}
+
+
+Réponse attendue :
+
+{
+  "message": "✅ Trajet ajouté avec succès",
+  "trip": {
+    "_id": "...",
+    "ecoPoints": 930
+  }
+}
