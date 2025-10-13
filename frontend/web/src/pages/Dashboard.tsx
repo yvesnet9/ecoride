@@ -1,341 +1,146 @@
-import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import Navbar from "../components/Navbar";
+// 🌿 src/pages/Dashboard.jsx – Tableau de bord utilisateur EcoRide
+import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
+import toast from "react-hot-toast";
+import AddTripForm from "../components/AddTripForm";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 export default function Dashboard() {
-  const [users, setUsers] = useState<any[]>([]);
-  const [trips, setTrips] = useState<any[]>([]);
-  const [status, setStatus] = useState("⏳ Connexion au serveur...");
-  const [form, setForm] = useState({ name: "", email: "" });
-  const [tripForm, setTripForm] = useState({
-    user: "",
-    origin: "",
-    destination: "",
-    distanceKm: "",
-  });
-  const [calculatedEcoPoints, setCalculatedEcoPoints] = useState(0);
+  const [ecoPoints, setEcoPoints] = useState(0);
+  const [trips, setTrips] = useState([]);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
 
-  // 🧠 Charger les utilisateurs et trajets
+  // 🔄 Charger les trajets utilisateur
+  const fetchTrips = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/trips", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setTrips(data);
+        const total = data.reduce((sum, t) => sum + (t.ecoPoints || 0), 0);
+        setEcoPoints(total);
+      }
+    } catch (error) {
+      console.error("Erreur de chargement des trajets :", error);
+    }
+  };
+
   useEffect(() => {
-    fetchUsers();
     fetchTrips();
   }, []);
 
-  // ✅ Récupérer les utilisateurs
-  async function fetchUsers() {
-    try {
-      const res = await fetch("http://localhost:3000/users");
-      if (!res.ok) throw new Error("Erreur serveur");
-      const data = await res.json();
-      setUsers(data);
-      setStatus("✅ Connexion API réussie");
-    } catch (error) {
-      console.error(error);
-      setStatus("❌ Erreur de connexion au serveur");
-    }
-  }
+  // ⚡ WebSocket – mise à jour en temps réel
+  useEffect(() => {
+    const socket = io("http://localhost:5000");
 
-  // ✅ Récupérer les trajets
-  async function fetchTrips() {
-    try {
-      const res = await fetch("http://localhost:3000/trips");
-      if (res.ok) {
-        const data = await res.json();
-        setTrips(data);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
+    socket.on(`ecoPointsUpdated-${user._id}`, (data) => {
+      toast.success(`${data.message} 🎉 (+${data.gained} pts)`);
+      setEcoPoints(data.total);
+    });
 
-  // ➕ Ajouter un utilisateur
-  const handleAddUser = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const res = await fetch("http://localhost:3000/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, ecoPoints: 0 }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setUsers([...users, data.user]);
-        setForm({ name: "", email: "" });
-      } else {
-        alert("⚠️ Cet email est peut-être déjà utilisé.");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    socket.on("newTripAdded", (data) => {
+      if (data.user === user.name) fetchTrips();
+    });
 
-  // ➕ Ajouter un trajet
-  const handleAddTrip = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const distance = parseFloat(tripForm.distanceKm);
-    const ecoPoints = distance * 2;
-    try {
-      const res = await fetch("http://localhost:3000/trips", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...tripForm,
-          distanceKm: distance,
-          ecoPoints,
-        }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setTrips([...trips, data.trip]);
-        setTripForm({ user: "", origin: "", destination: "", distanceKm: "" });
-        setCalculatedEcoPoints(0);
-      } else {
-        alert("❌ Erreur lors de l’ajout du trajet");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    return () => socket.disconnect();
+  }, [user._id]);
 
-  // 🧮 Calcul automatique écoPoints
-  const handleTripChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    const updatedForm = { ...tripForm, [name]: value };
-    if (name === "distanceKm") {
-      const distance = parseFloat(value) || 0;
-      setCalculatedEcoPoints(distance * 2);
-    }
-    setTripForm(updatedForm);
-  };
-
-  const cardVariants = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-  };
-
-  const buttonVariants = {
-    hover: {
-      scale: 1.05,
-      boxShadow: "0 0 12px rgba(76,175,80,0.4)",
-      transition: { duration: 0.3 },
-    },
-    tap: { scale: 0.95 },
-  };
+  // 📊 Données pour le graphe
+  const chartData = trips.map((t, index) => ({
+    name: `Trajet ${index + 1}`,
+    points: t.ecoPoints,
+  }));
 
   return (
-    <>
-      <Navbar />
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-        style={{
-          padding: "100px 20px",
-          textAlign: "center",
-          fontFamily: "'Poppins', sans-serif",
-          background: "#f5f7f4",
-          minHeight: "100vh",
-        }}
-      >
-        <motion.h1
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          🚗 Tableau de bord Ecoride
-        </motion.h1>
-        <p style={{ color: "#2e7d32", fontWeight: "bold" }}>{status}</p>
+    <div className="max-w-5xl mx-auto p-6 bg-white shadow-lg rounded-xl mt-10">
+      {/* 🌱 En-tête */}
+      <h1 className="text-3xl font-bold text-green-700 mb-4">
+        🌱 Tableau de bord – {user?.name}
+      </h1>
 
-        {/* 👥 Liste des utilisateurs */}
-        <motion.div
-          variants={cardVariants}
-          initial="hidden"
-          animate="visible"
-          style={{
-            backgroundColor: "white",
-            borderRadius: "16px",
-            padding: "30px",
-            margin: "30px auto",
-            boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-            width: "90%",
-            maxWidth: "900px",
-          }}
-        >
-          <h2>👥 Liste des utilisateurs ({users.length})</h2>
-          {users.length === 0 ? (
-            <p>Aucun utilisateur trouvé.</p>
-          ) : (
-            <ul style={{ listStyleType: "none", padding: 0 }}>
-              {users.map((user) => (
-                <motion.li
-                  key={user._id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  <strong>{user.name}</strong> ({user.email}) —{" "}
-                  {user.ecoPoints} pts
-                </motion.li>
-              ))}
-            </ul>
-          )}
+      <p className="text-lg mb-6">
+        Total ÉcoPoints :{" "}
+        <span className="font-semibold text-emerald-700">{ecoPoints}</span>
+      </p>
 
-          {/* ➕ Ajouter utilisateur */}
-          <motion.form
-            onSubmit={handleAddUser}
-            style={{ marginTop: "15px" }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            <h3>➕ Ajouter un utilisateur</h3>
-            <input
-              type="text"
-              name="name"
-              placeholder="Nom"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              required
-              style={{ margin: "5px", padding: "6px" }}
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              required
-              style={{ margin: "5px", padding: "6px" }}
-            />
-            <motion.button
-              type="submit"
-              variants={buttonVariants}
-              whileHover="hover"
-              whileTap="tap"
-              style={{
-                backgroundColor: "#4CAF50",
-                color: "white",
-                border: "none",
-                borderRadius: "6px",
-                cursor: "pointer",
-                padding: "10px 16px",
-                marginTop: "8px",
-              }}
-            >
-              Ajouter
-            </motion.button>
-          </motion.form>
-        </motion.div>
+      {/* ➕ Formulaire d’ajout de trajet */}
+      <AddTripForm onTripAdded={fetchTrips} />
 
-        {/* 🚗 Liste des trajets */}
-        <motion.div
-          variants={cardVariants}
-          initial="hidden"
-          animate="visible"
-          transition={{ delay: 0.2 }}
-          style={{
-            backgroundColor: "white",
-            borderRadius: "16px",
-            padding: "30px",
-            margin: "30px auto",
-            boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-            width: "90%",
-            maxWidth: "900px",
-          }}
-        >
-          <h2>🌍 Liste des trajets ({trips.length})</h2>
-          {trips.length === 0 ? (
-            <p>Aucun trajet enregistré.</p>
-          ) : (
-            <ul style={{ listStyleType: "none", padding: 0 }}>
+      {/* 📈 Évolution des ÉcoPoints */}
+      <div className="mt-10">
+        <h2 className="text-xl font-semibold text-green-800 mb-4">
+          📊 Évolution de vos ÉcoPoints
+        </h2>
+
+        {chartData.length === 0 ? (
+          <p className="text-gray-500">Aucun trajet pour le moment.</p>
+        ) : (
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="points"
+                stroke="#16a34a"
+                strokeWidth={2}
+                activeDot={{ r: 6 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
+      </div>
+
+      {/* 🧾 Historique des trajets */}
+      <div className="mt-10">
+        <h2 className="text-xl font-semibold text-green-800 mb-4">
+          🧾 Historique de vos trajets
+        </h2>
+
+        {trips.length === 0 ? (
+          <p className="text-gray-500">Aucun trajet enregistré.</p>
+        ) : (
+          <table className="w-full border-collapse text-left">
+            <thead>
+              <tr className="bg-green-50 text-green-800">
+                <th className="p-3 border-b">Origine</th>
+                <th className="p-3 border-b">Destination</th>
+                <th className="p-3 border-b">Distance (km)</th>
+                <th className="p-3 border-b">ÉcoPoints</th>
+                <th className="p-3 border-b">Date</th>
+              </tr>
+            </thead>
+            <tbody>
               {trips.map((trip) => (
-                <motion.li
-                  key={trip._id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  {trip.origin} → {trip.destination} ({trip.distanceKm} km) 🌱{" "}
-                  <span style={{ color: "#4CAF50" }}>{trip.ecoPoints} pts</span>
-                </motion.li>
+                <tr key={trip._id} className="hover:bg-green-50">
+                  <td className="p-3 border-b">{trip.origin}</td>
+                  <td className="p-3 border-b">{trip.destination}</td>
+                  <td className="p-3 border-b">{trip.distanceKm}</td>
+                  <td className="p-3 border-b text-green-700 font-semibold">
+                    +{trip.ecoPoints}
+                  </td>
+                  <td className="p-3 border-b">
+                    {new Date(trip.date).toLocaleDateString("fr-FR")}
+                  </td>
+                </tr>
               ))}
-            </ul>
-          )}
-
-          {/* ➕ Ajouter un trajet */}
-          <form onSubmit={handleAddTrip} style={{ marginTop: "15px" }}>
-            <h3>➕ Ajouter un trajet</h3>
-            <select
-              name="user"
-              value={tripForm.user}
-              onChange={handleTripChange}
-              required
-              style={{ margin: "5px", padding: "6px" }}
-            >
-              <option value="">-- Sélectionner un utilisateur --</option>
-              {users.map((u) => (
-                <option key={u._id} value={u._id}>
-                  {u.name} ({u.email})
-                </option>
-              ))}
-            </select>
-            <input
-              type="text"
-              name="origin"
-              placeholder="Origine"
-              value={tripForm.origin}
-              onChange={handleTripChange}
-              required
-              style={{ margin: "5px", padding: "6px" }}
-            />
-            <input
-              type="text"
-              name="destination"
-              placeholder="Destination"
-              value={tripForm.destination}
-              onChange={handleTripChange}
-              required
-              style={{ margin: "5px", padding: "6px" }}
-            />
-            <input
-              type="number"
-              name="distanceKm"
-              placeholder="Distance (km)"
-              value={tripForm.distanceKm}
-              onChange={handleTripChange}
-              min="1"
-              required
-              style={{ margin: "5px", padding: "6px" }}
-            />
-            <motion.button
-              type="submit"
-              variants={buttonVariants}
-              whileHover="hover"
-              whileTap="tap"
-              style={{
-                backgroundColor: "#4CAF50",
-                color: "white",
-                border: "none",
-                borderRadius: "6px",
-                cursor: "pointer",
-                padding: "10px 16px",
-                marginTop: "8px",
-              }}
-            >
-              Ajouter le trajet
-            </motion.button>
-          </form>
-
-          {calculatedEcoPoints > 0 && (
-            <p style={{ color: "#2e7d32", marginTop: "10px" }}>
-              🌱 Ce trajet rapportera environ{" "}
-              <strong>{calculatedEcoPoints}</strong> écoPoints
-            </p>
-          )}
-        </motion.div>
-      </motion.div>
-    </>
+            </tbody>
+          </table>
+        )}
+      </div>
+    </div>
   );
 }

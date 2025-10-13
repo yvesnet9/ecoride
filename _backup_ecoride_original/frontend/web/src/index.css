@@ -1,0 +1,54 @@
+/* 🌿 Importation Tailwind — essentiel pour activer le style */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ✅ Styles globaux EcoRide */
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  background-color: #f5f7f4; /* Vert clair doux */
+  font-family: "Poppins", sans-serif;
+  color: #1e293b; /* gris foncé lisible */
+  display: flex;
+  flex-direction: column;
+}
+
+/* ✅ Ajustement du contenu principal React */
+#root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ✅ Améliorations visuelles globales */
+a {
+  color: #047857; /* vert émeraude */
+  text-decoration: none;
+}
+
+a:hover {
+  color: #065f46; /* vert plus foncé */
+}
+
+/* ✅ Boutons cohérents */
+button {
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  transform: scale(1.03);
+}
+
+/* ✅ Sélecteurs de texte et éléments d’interaction */
+::selection {
+  background: #a7f3d0; /* vert clair */
+  color: #064e3b;
+}

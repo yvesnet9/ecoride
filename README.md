@@ -1,6 +1,7 @@
 # 🌿 Ecoride – Plateforme innovante de mobilité partagée et écoresponsable
 
 ## 👤 Auteur
+
 **Yves Mukuna Jamesy**  
 📧 [yvesnet9@gmail.com](mailto:yvesnet9@gmail.com)  
 🎓 Formation **Développeur Web & Web Mobile – Studi 2025**
@@ -8,52 +9,53 @@
 ---
 
 ## 🧭 1. Présentation du projet
-**Ecoride** est une plateforme web collaborative de mobilité durable, permettant aux utilisateurs de partager leurs trajets, économiser du carburant et cumuler des écoPoints 🌱.
----
+
+## **Ecoride** est une plateforme web collaborative de mobilité durable, permettant aux utilisateurs de partager leurs trajets, économiser du carburant et cumuler des écoPoints 🌱.
 
 ## 🎯 1.2 Objectifs du projet
 
 Le projet **Ecoride** vise à :
-- 🌍 Promouvoir une **mobilité durable et partagée**, en réduisant le nombre de véhicules sur les routes.  
-- 💨 Diminuer les **émissions de CO₂** grâce au covoiturage et à l’optimisation des trajets.  
-- 💚 Encourager les comportements écoresponsables via un **système d’écoPoints** récompensant les utilisateurs.  
-- 🧭 Offrir une plateforme **simple, intuitive et interactive**, accessible sur ordinateur et mobile.  
 
-En résumé, Ecoride permet de **voyager ensemble, plus vert et plus malin.**
----
+- 🌍 Promouvoir une **mobilité durable et partagée**, en réduisant le nombre de véhicules sur les routes.
+- 💨 Diminuer les **émissions de CO₂** grâce au covoiturage et à l’optimisation des trajets.
+- 💚 Encourager les comportements écoresponsables via un **système d’écoPoints** récompensant les utilisateurs.
+- 🧭 Offrir une plateforme **simple, intuitive et interactive**, accessible sur ordinateur et mobile.
+
+## En résumé, Ecoride permet de **voyager ensemble, plus vert et plus malin.**
 
 ## 💡 1.3 Contexte et motivation
 
 Aujourd’hui, la mobilité urbaine fait face à plusieurs défis :
-- 🚗 Une circulation toujours plus dense et une pollution croissante.  
-- ⛽ Une dépendance forte aux carburants fossiles.  
+
+- 🚗 Une circulation toujours plus dense et une pollution croissante.
+- ⛽ Une dépendance forte aux carburants fossiles.
 - 🕐 Une perte de temps quotidienne pour les trajets domicile-travail.
 
 Face à ce constat, **Ecoride** a été imaginée comme une **plateforme moderne et écoresponsable** permettant :
-- Aux citoyens de **partager leurs trajets** et de réduire leurs coûts de transport.  
-- Aux entreprises et collectivités de **promouvoir des pratiques durables**.  
+
+- Aux citoyens de **partager leurs trajets** et de réduire leurs coûts de transport.
+- Aux entreprises et collectivités de **promouvoir des pratiques durables**.
 - Aux développeurs et designers d’explorer une approche **technologique innovante** du covoiturage.
 
-💚 Ce projet s’inscrit dans une démarche de **transition écologique**, alliant technologie, mobilité et responsabilité environnementale.
----
+## 💚 Ce projet s’inscrit dans une démarche de **transition écologique**, alliant technologie, mobilité et responsabilité environnementale.
 
 ## 👥 1.4 Public cible et utilisateurs visés
 
 La plateforme **Ecoride** s’adresse à un large public, composé de plusieurs profils complémentaires :
 
-- 👨‍💼 **Les particuliers actifs** : souhaitant partager leurs trajets quotidiens (domicile ↔ travail) pour réduire les coûts et leur empreinte carbone.  
-- 🏫 **Les étudiants** : en recherche de solutions économiques et conviviales pour se déplacer entre le campus et leur logement.  
-- 🏢 **Les entreprises et collectivités locales** : désireuses d’encourager la mobilité verte auprès de leurs employés.  
-- 🌍 **Les associations écologiques** : qui peuvent utiliser la plateforme pour promouvoir des initiatives de covoiturage responsable.  
+- 👨‍💼 **Les particuliers actifs** : souhaitant partager leurs trajets quotidiens (domicile ↔ travail) pour réduire les coûts et leur empreinte carbone.
+- 🏫 **Les étudiants** : en recherche de solutions économiques et conviviales pour se déplacer entre le campus et leur logement.
+- 🏢 **Les entreprises et collectivités locales** : désireuses d’encourager la mobilité verte auprès de leurs employés.
+- 🌍 **Les associations écologiques** : qui peuvent utiliser la plateforme pour promouvoir des initiatives de covoiturage responsable.
 
-L’objectif est de **rassembler ces utilisateurs autour d’une même vision : se déplacer autrement, ensemble, et durablement.**
----
+## L’objectif est de **rassembler ces utilisateurs autour d’une même vision : se déplacer autrement, ensemble, et durablement.**
 
 ## ⚙️ 1.5 Stack technique et outils utilisés
 
 Le projet **Ecoride** repose sur une architecture **Full-Stack JavaScript moderne**, combinant performance, modularité et maintenabilité.
 
 ### 🧠 Front-end
+
 - **Framework :** React (avec Vite pour un démarrage rapide)
 - **Langage :** TypeScript (sécurité et clarté du code)
 - **Animations :** Framer Motion pour des transitions fluides
@@ -62,33 +64,37 @@ Le projet **Ecoride** repose sur une architecture **Full-Stack JavaScript modern
 - **UI :** TailwindCSS (pour un design sobre et responsive)
 
 ### ⚙️ Back-end
-- **Serveur :** Express.js  
-- **Langage :** Node.js  
-- **Base de données :** MongoDB Atlas (connexion cloud sécurisée)  
-- **ORM / ODM :** Mongoose  
-- **Middleware :** CORS, JSON, dotenv (gestion des variables d’environnement)  
+
+- **Serveur :** Express.js
+- **Langage :** Node.js
+- **Base de données :** MongoDB Atlas (connexion cloud sécurisée)
+- **ORM / ODM :** Mongoose
+- **Middleware :** CORS, JSON, dotenv (gestion des variables d’environnement)
 - **Architecture :** API REST structurée (routes, contrôleurs, modèles)
 
 ### 🗄️ Base de données
+
 - Hébergée sur **MongoDB Atlas**
 - Collections :
   - `users` : nom, email, écoPoints
   - `trips` : utilisateur, origine, destination, distance, écoPoints associés
 
 ### 🧰 Outils de développement
-- **IDE :** Visual Studio Code  
-- **Contrôle de version :** Git & GitHub  
-- **Gestion de projet :** Trello (suivi des tâches et sprints Agile)  
-- **Terminal :** WSL2 (Ubuntu)  
+
+- **IDE :** Visual Studio Code
+- **Contrôle de version :** Git & GitHub
+- **Gestion de projet :** Trello (suivi des tâches et sprints Agile)
+- **Terminal :** WSL2 (Ubuntu)
 - **Documentation :** Markdown (`README.md`) et export PDF pour le jury
 
-💡 Cette stack garantit une application **rapide, évolutive et écologique** dans son approche technique.
----
+## 💡 Cette stack garantit une application **rapide, évolutive et écologique** dans son approche technique.
 
 ## 🚀 1.6 Fonctionnalités principales
 
 ### 🧩 Présentation générale
+
 **Ecoride** est une application web complète permettant :
+
 - aux utilisateurs de s’inscrire et de gérer leurs informations,
 - d’ajouter et consulter des trajets partagés,
 - et de cumuler automatiquement des **écoPoints** proportionnels à la distance parcourue 🌱.
@@ -96,47 +102,56 @@ Le projet **Ecoride** repose sur une architecture **Full-Stack JavaScript modern
 ---
 
 ### 💻 Front-end (React + Framer Motion)
+
 L’interface utilisateur a été pensée pour être **fluide, responsive et moderne**, grâce à React et à des animations douces avec **Framer Motion**.
 
 #### ✅ Pages principales :
-1. **HomePage** – Page d’accueil  
-   - Présentation du concept et bouton d’accès au tableau de bord  
-   - Animation d’apparition du titre et du bouton (fade-in + slide)  
+
+1. **HomePage** – Page d’accueil
+
+   - Présentation du concept et bouton d’accès au tableau de bord
+   - Animation d’apparition du titre et du bouton (fade-in + slide)
    - Couleurs douces (#2e7d32 – vert Ecoride)
 
-2. **Dashboard** – Tableau de bord principal  
-   - Affiche la liste des utilisateurs et des trajets  
-   - Permet d’ajouter un **nouvel utilisateur** via un formulaire (nom + email)  
-   - Permet d’ajouter un **nouveau trajet** (origine, destination, distance)  
+2. **Dashboard** – Tableau de bord principal
+
+   - Affiche la liste des utilisateurs et des trajets
+   - Permet d’ajouter un **nouvel utilisateur** via un formulaire (nom + email)
+   - Permet d’ajouter un **nouveau trajet** (origine, destination, distance)
    - Calcule automatiquement les **écoPoints** :  
-     🧮 `écoPoints = distanceKm × 2`  
+     🧮 `écoPoints = distanceKm × 2`
    - Animation des cartes, boutons et transitions (Framer Motion)
 
-3. **AboutPage** – Page “À propos”  
-   - Présentation du projet, de sa mission écologique et des technologies utilisées  
+3. **AboutPage** – Page “À propos”
+
+   - Présentation du projet, de sa mission écologique et des technologies utilisées
    - Navigation fluide et cohérente avec le reste du site
 
-4. **Navbar (commune)**  
-   - Navigation fluide entre les pages  
-   - Animation “soulignement vert” au survol  
+4. **Navbar (commune)**
+
+   - Navigation fluide entre les pages
+   - Animation “soulignement vert” au survol
    - Logo Ecoride animé (fade-in léger à l’arrivée sur chaque page)
 
-5. **Loader** (animation de chargement)  
-   - Affiche une petite **feuille tournante 🌿** ou le logo Ecoride animé  
+5. **Loader** (animation de chargement)
+   - Affiche une petite **feuille tournante 🌿** ou le logo Ecoride animé
    - Apparition lors du lancement initial de l’app
 
 ---
 
 ### 🛠️ Back-end (Express + MongoDB)
+
 Le serveur Express constitue le cœur de la logique métier de l’application.
 
 #### ⚙️ Routes principales :
-- **GET `/users`** → Récupère la liste des utilisateurs  
-- **POST `/users`** → Ajoute un nouvel utilisateur (nom, email, ecoPoints=0)  
-- **GET `/trips`** → Récupère la liste des trajets  
+
+- **GET `/users`** → Récupère la liste des utilisateurs
+- **POST `/users`** → Ajoute un nouvel utilisateur (nom, email, ecoPoints=0)
+- **GET `/trips`** → Récupère la liste des trajets
 - **POST `/trips`** → Ajoute un trajet et calcule les écoPoints correspondants
 
 #### 🧮 Exemple d’ajout de trajet :
+
 ```json
 POST /trips
 {
@@ -173,9 +188,9 @@ Avant le développement, une phase de **conception visuelle et technique** a ét
 ### 🎨 Maquettes & Wireframes
 Les premières maquettes ont été réalisées avec **Figma**, afin de visualiser la structure et le design général de l’application :
 
-- 🏠 **Page d’accueil (Home)** : message d’introduction, bouton “Accéder au tableau de bord”.  
-- 📊 **Dashboard** : affichage des utilisateurs, trajets et formulaires d’ajout.  
-- ℹ️ **Page “À propos”** : présentation du projet et lien vers les ressources.  
+- 🏠 **Page d’accueil (Home)** : message d’introduction, bouton “Accéder au tableau de bord”.
+- 📊 **Dashboard** : affichage des utilisateurs, trajets et formulaires d’ajout.
+- ℹ️ **Page “À propos”** : présentation du projet et lien vers les ressources.
 
 Les maquettes suivent la **charte graphique verte Ecoride** :
 - Couleur principale : `#2e7d32` (vert écoresponsable)
@@ -189,19 +204,19 @@ Les images des maquettes sont disponibles dans le dossier :
 
 #### 1️⃣ Diagramme de cas d’utilisation
 Ce diagramme montre les interactions principales entre les utilisateurs et le système :
-- Créer un compte utilisateur  
-- Ajouter un trajet  
-- Consulter la liste des trajets  
-- Accumuler des écoPoints  
+- Créer un compte utilisateur
+- Ajouter un trajet
+- Consulter la liste des trajets
+- Accumuler des écoPoints
 
 📁 Fichier : `/docs/UML/diagramme_cas_utilisation.png`
 
 #### 2️⃣ Diagramme de séquence
 Il illustre la communication entre le **Front-end**, le **Serveur Express**, et la **Base MongoDB** :
-- L’utilisateur soumet un formulaire via React  
-- Le front envoie une requête HTTP POST  
-- Le back (Express) crée une entrée dans MongoDB  
-- Une réponse JSON est renvoyée au front pour mise à jour de l’interface  
+- L’utilisateur soumet un formulaire via React
+- Le front envoie une requête HTTP POST
+- Le back (Express) crée une entrée dans MongoDB
+- Une réponse JSON est renvoyée au front pour mise à jour de l’interface
 
 📁 Fichier : `/docs/UML/diagramme_sequence.png`
 
@@ -576,3 +591,262 @@ Offrir des bonus ou réductions partenaires selon le nombre d’écoPoints accum
 Cette expérience m’a aussi sensibilisé à la place du numérique dans la transition écologique.”
 
 — Yves Mukuna Jamesy 🌱
+
+
+
+🎤 Présentation orale jury – Ecoride
+🕐 Durée : 5 à 10 minutes
+🧭 1️⃣ Introduction – Présente-toi & ton projet
+
+⏱ Durée : 1 min
+
+“Bonjour, je m’appelle Yves Mukuna Jamesy,
+je suis apprenant en Développement Web & Web Mobile chez Studi.
+Aujourd’hui, je vous présente mon projet final :
+Ecoride, une plateforme de mobilité partagée et écoresponsable.”
+
+🎯 Objectif de cette intro :
+
+Montrer que tu maîtrises ton sujet
+
+Poser le thème : mobilité durable, technologie, utilité sociale
+
+🌿 2️⃣ Contexte et objectifs du projet
+
+⏱ Durée : 1 min 30
+
+“Ecoride est née d’un constat simple :
+les trajets individuels quotidiens génèrent beaucoup d’émissions de CO₂.
+L’objectif est de proposer une solution numérique simple pour
+favoriser le covoiturage et récompenser les comportements écologiques.”
+
+“Mon but était aussi de concevoir un projet complet :
+du frontend React à la base de données MongoDB,
+avec un design moderne et des animations fluides pour une meilleure expérience utilisateur.”
+
+⚙️ 3️⃣ Stack technique & architecture
+
+⏱ Durée : 1 min 30
+
+“Le projet repose sur une architecture MERN :
+
+React pour le front-end, avec Framer Motion pour les animations,
+
+Express.js pour le serveur API,
+
+MongoDB Atlas pour la base de données,
+
+et Node.js comme moteur principal.”
+
+“Cette stack m’a permis de gérer tout le cycle :
+création d’utilisateurs, enregistrement de trajets,
+calcul automatique des écoPoints, et affichage en temps réel.”
+
+💡 Astuce orale :
+Montre que tu maîtrises les interactions : “Le front envoie une requête POST au back, le back enregistre dans MongoDB et renvoie la réponse JSON au front.”
+
+🖥️ 4️⃣ Fonctionnalités principales
+
+⏱ Durée : 2 min
+
+“L’application se compose de trois pages principales :
+
+une page Accueil qui présente Ecoride,
+
+un Tableau de bord pour gérer les utilisateurs et trajets,
+
+et une page À propos pour contextualiser le projet.”
+
+“Depuis le tableau de bord, je peux :
+
+Ajouter un utilisateur,
+
+Ajouter un trajet,
+
+Le système calcule automatiquement les écoPoints selon la distance,
+
+Et toutes les données sont enregistrées dans MongoDB Atlas.”
+
+“Le tout est accompagné d’animations fluides,
+un loader personnalisé avec le logo Ecoride,
+et un design cohérent basé sur le vert #2e7d32.”
+
+🎯 But ici : prouver que ton app est cohérente et finie.
+
+📈 5️⃣ Gestion de projet & outils collaboratifs
+
+⏱ Durée : 1 min
+
+“Pour gérer le projet, j’ai utilisé :
+
+Git et GitHub pour le versioning (avec commits F1.1 à F1.10),
+
+Trello pour suivre les tâches,
+
+et MongoDB Atlas pour centraliser les données.”
+
+“Chaque étape a été sauvegardée et suivie selon la méthodologie Agile,
+ce qui m’a permis d’avoir un projet bien structuré et traçable.”
+
+💬 6️⃣ Conclusion & perspectives
+
+⏱ Durée : 1 min 30
+
+“Ecoride m’a permis de consolider mes compétences techniques et de gestion.
+C’est un projet complet qui m’a fait passer de la théorie à la pratique.”
+
+“Pour la suite, j’aimerais :
+
+Ajouter une authentification JWT,
+
+Développer une version mobile,
+
+Et intégrer un système de récompenses écologiques.”
+
+“Ce projet représente pour moi une belle illustration
+de ce que peut apporter le numérique à l’écologie.” 🌱
+
+🧠 Questions possibles du jury
+Question	Réponse suggérée
+“Pourquoi avoir choisi React ?”	“Pour sa réactivité et sa facilité à créer des interfaces dynamiques et modulaires.”
+“Comment communique le front avec le back ?”	“Grâce à des appels fetch sur les routes Express /users et /trips.”
+“Comment les données sont-elles stockées ?”	“Dans MongoDB Atlas, via le module Mongoose, avec des schémas utilisateurs et trajets.”
+“Que ferais-tu si tu devais continuer ce projet ?”	“Je ferais une authentification utilisateur et un tableau analytique avec graphiques.”
+
+🎯 Fiche de révision – Présentation orale Ecoride (5 à 10 min)
+🧭 INTRODUCTION
+
+🗣️ “Bonjour, je m’appelle Yves Mukuna Jamesy,
+apprenant en Développement Web & Web Mobile chez Studi.
+Je vous présente mon projet final : Ecoride,
+une plateforme de mobilité partagée et écoresponsable.”
+
+👉 Points clés à retenir :
+
+Thème : mobilité durable 🌱
+
+Objectif : solution numérique utile et verte
+
+Montrer ton aisance et ton calme
+
+🌍 CONTEXTE & OBJECTIFS
+
+🗣️ “Ecoride est née d’un constat simple :
+les trajets individuels quotidiens génèrent trop de CO₂.
+Mon objectif : encourager le covoiturage et récompenser les comportements écologiques.”
+
+👉 Mots-clés :
+
+Écologie ♻️
+
+Innovation numérique 💡
+
+Projet complet du front au back
+
+⚙️ STACK TECHNIQUE
+
+🗣️ “Ecoride repose sur la stack MERN :
+MongoDB, Express, React, Node.js.
+Le front communique avec le back via des requêtes API (fetch).”
+
+👉 Mots-clés techniques :
+
+API REST
+
+Requêtes POST / GET
+
+MongoDB Atlas
+
+Framer Motion (animations)
+
+💬 À dire avec confiance :
+
+“Le front envoie une requête POST → le serveur traite et renvoie la réponse JSON.”
+
+🖥️ FONCTIONNALITÉS
+
+🗣️ “L’app a 3 pages :
+Accueil 🌿 / Tableau de bord 🚗 / À propos ℹ️”
+
+👉 Dans le dashboard :
+
+Ajouter utilisateur 👤
+
+Ajouter trajet 🚗
+
+Calcul auto des écoPoints 🌱
+
+Données stockées dans MongoDB
+
+💡 Design cohérent :
+
+Vert Ecoride (#2e7d32)
+
+Loader animé avec logo
+
+Transitions fluides
+
+📋 GESTION DE PROJET
+
+🗣️ “J’ai utilisé Git/GitHub, Trello et MongoDB Atlas.”
+
+👉 Structure claire :
+
+Commits F1.1 à F1.10
+
+Suivi Agile
+
+Dossier /docs/ complet (UML, wireframes, etc.)
+
+💬 Montre ton autonomie :
+
+“J’ai versionné chaque étape et testé mes routes avec Postman.”
+
+💬 CONCLUSION & PERSPECTIVES
+
+🗣️ “Ecoride m’a permis de passer de la théorie à la pratique.”
+
+“Je veux aller plus loin :
+authentification JWT, version mobile, récompenses écologiques.”
+
+👉 Phrase de clôture impactante :
+
+“Ecoride prouve que le numérique peut être un levier pour l’écologie.” 🌍💚
+
+🧠 QUESTIONS TYPES DU JURY
+💬 Question	💡 Réponse courte et claire
+Pourquoi React ?	Pour sa modularité et ses performances.
+Comment front ↔ back ?	Via fetch sur les routes Express /users et /trips.
+Où sont stockées les données ?	Dans MongoDB Atlas via Mongoose.
+Pistes d’évolution ?	Authentification JWT, mobile app, système de récompenses.
+Difficulté rencontrée ?	Liaison front-back & gestion des animations Framer Motion.
+✅ ASTUCE DE FIN :
+
+Respire, souris, parle lentement.
+
+N’apprends pas par cœur : raconte ton projet.
+
+1 idée = 1 phrase claire.
+
+Conclus par :
+
+“Merci pour votre attention. Avez-vous des questions ?” 🌿
+
+🧠 Slide 11 – Questions du jury & réponses
+
+💬 Pourquoi avoir choisi React ?
+
+Pour sa réactivité, sa modularité et sa communauté active — parfait pour construire une interface fluide et évolutive.
+
+⚙️ Comment communique le front avec le back ?
+
+Grâce à des requêtes fetch envoyées vers les routes Express (/users, /trips) qui renvoient des réponses JSON au front.
+
+💾 Où sont stockées les données ?
+
+Dans MongoDB Atlas, via Mongoose, sous forme de collections utilisateurs et trajets.
+
+🚀 Quelle serait la suite du projet ?
+
+Ajouter une authentification JWT, une application mobile, et un système de récompenses écologiques.
+```

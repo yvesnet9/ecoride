@@ -1,24 +1,25 @@
 {
-  "name": "backend-express",
+  "name": "ecoride-backend",
   "version": "1.0.0",
-  "type": "module",
+  "description": "Backend Express du projet Ecoride",
   "main": "src/server.js",
+  "type": "module",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon src/server.js"
   },
-  "keywords": [],
-  "author": "Yves Mukuna Jamesy",
-  "license": "ISC",
-  "description": "API backend pour le projet Ecoride – Plateforme de mobilité partagée et écoresponsable",
   "dependencies": {
+    "axios": "^1.12.2",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "mongoose": "^8.19.0",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.1",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.0"
   }
 }
