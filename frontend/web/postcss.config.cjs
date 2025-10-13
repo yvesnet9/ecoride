@@ -1,8 +1,8 @@
-// ✅ postcss.config.cjs — Configuration correcte pour TailwindCSS v4
-module.exports = {
-  plugins: {
-    "@tailwindcss/postcss": {}, // ⚡ le bon plugin !
-    autoprefixer: {},
-  },
+// ✅ frontend/web/postcss.config.cjs
+import tailwindcss from '@tailwindcss/postcss';
+import autoprefixer from 'autoprefixer';
+
+export default {
+  plugins: [tailwindcss(), autoprefixer()],
 };
 
