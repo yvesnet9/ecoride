@@ -1,46 +1,41 @@
-// 🕒 useAuthCheck.ts — Vérifie la validité du token JWT et gère la déconnexion automatique
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
+import axios from "axios";
 import jwtDecode from "jwt-decode";
 
-interface JwtPayload {
-  exp: number;
-}
-
 export default function useAuthCheck() {
-  const navigate = useNavigate();
+  const { user, setUser, logout } = useUser();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
-    if (!token) return;
+    if (!token) {
+      setUser(null);
+      return;
+    }
 
     try {
-      const decoded: JwtPayload = jwtDecode(token);
+      const decoded = jwtDecode(token);
       const now = Date.now() / 1000;
-
-      // ⏳ Si expiré → déconnexion + redirection
-      if (decoded.exp < now) {
-        alert("⏳ Votre session a expiré. Veuillez vous reconnecter.");
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        navigate("/login", { replace: true });
-      } else {
-        // 🕒 Vérifie régulièrement (toutes les 30s)
-        const timeLeft = (decoded.exp - now) * 1000;
-        const timer = setTimeout(() => {
-          alert("⏳ Votre session a expiré. Veuillez vous reconnecter.");
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          navigate("/login", { replace: true });
-        }, timeLeft);
-        return () => clearTimeout(timer);
+      if (decoded.exp && decoded.exp < now) {
+        console.warn("⏳ Token expiré");
+        logout();
+        return;
       }
+
+      // Vérification côté serveur (optionnelle mais recommandée)
+      axios
+        .get("/api/auth/verify", {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((res) => {
+          setUser(res.data.user);
+        })
+        .catch(() => {
+          logout(); // Token invalide ou utilisateur supprimé
+        });
     } catch (err) {
-      console.error("Erreur de décodage JWT :", err);
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      navigate("/login", { replace: true });
+      console.error("Erreur de vérification token :", err);
+      logout();
     }
-  }, [navigate]);
+  }, []);
 }

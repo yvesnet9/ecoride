@@ -7,10 +7,27 @@ import "./index.css";
 // 🧁 Notifications globales (react-hot-toast)
 import { Toaster } from "react-hot-toast";
 
+// 🔄 Remontée automatique en haut de page sur changement de route
+import { useEffect } from "react";
+import { useLocation, BrowserRouter } from "react-router-dom";
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [pathname]);
+
+  return null;
+}
+
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    {/* 🚀 Application principale */}
-    <App />
+    {/* 🌍 Application EcoRide */}
+    <BrowserRouter>
+      <ScrollToTop />
+      <App />
+    </BrowserRouter>
 
     {/* 🍃 Notifications EcoRide */}
     <Toaster
@@ -25,6 +42,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           borderRadius: "12px",
           padding: "10px 14px",
           fontWeight: 500,
+          boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
         },
         success: {
           iconTheme: {

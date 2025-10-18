@@ -1,13 +1,32 @@
-// src/components/ProtectedRoute.jsx
+// 🌿 src/components/ProtectedRoute.tsx – Protection des routes EcoRide
+import { useContext } from "react";
 import { Navigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
-export default function ProtectedRoute({ children, requiredRole }) {
-  const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user") || "null");
+interface ProtectedRouteProps {
+  children: JSX.Element;
+  requiredRole?: "user" | "admin";
+}
 
-  if (!token || !user) return <Navigate to="/login" replace />;
-  if (requiredRole && user.role !== requiredRole)
+export default function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
+  const { user } = useContext(UserContext);
+
+  // �� Pendant le chargement initial (avant que le contexte soit défini)
+  if (user === undefined) {
+    return <div className="text-center mt-20 text-gray-500">Chargement...</div>;
+  }
+
+  // 🚫 Si aucun utilisateur connecté
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // 🚫 Si le rôle ne correspond pas
+  if (requiredRole && user.role !== requiredRole) {
     return <Navigate to="/" replace />;
+  }
 
+  // ✅ Sinon, on affiche la page protégée
   return children;
 }
+

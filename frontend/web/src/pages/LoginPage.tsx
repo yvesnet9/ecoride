@@ -1,76 +1,99 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { loginUser } from "../api/api"; // ✅ Corrigé si ton service se trouve dans src/api/api.js
+// 🌿 src/pages/LoginPage.jsx
+import { useState, useContext } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { UserContext } from "../context/UserContext";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setLoading(true);
 
     try {
-      const res = await loginUser(email, password);
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-      // ✅ Sauvegarde dans le stockage local
-      localStorage.setItem("token", res.token);
-      localStorage.setItem("user", JSON.stringify(res.user));
+      const data = await res.json();
 
-      // ✅ Message de confirmation
-      toast.success(res.message || "Connexion réussie !");
+      if (!res.ok) throw new Error(data.message || "Erreur de connexion");
 
-      // ✅ Redirection selon le rôle
-      if (res.user.role === "admin") {
-        navigate("/admin/dashboard");
-      } else {
-        navigate("/dashboard");
-      }
+      // ✅ On stocke le token pour les futures requêtes
+      localStorage.setItem("token", data.token);
+
+      // ✅ On garde les infos user dans le contexte
+      setUser(data.user);
+
+      toast.success(`Bienvenue ${data.user.name} 🌿`);
+
+      // ✅ Redirection vers le dashboard ou page précédente
+      navigate("/dashboard");
     } catch (err) {
-      console.error("Erreur connexion :", err);
-      setError(err.response?.data?.message || "❌ Erreur lors de la connexion");
-      toast.error("Identifiants incorrects ou serveur indisponible.");
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center mt-20">
-      <h1 className="text-2xl font-semibold mb-4 text-green-700">🔐 Connexion</h1>
+    <div className="flex justify-center items-center h-screen bg-gray-50">
+      <div className="bg-white p-8 shadow-lg rounded-2xl w-full max-w-md">
+        <h2 className="text-2xl font-bold text-[#1F2A44] mb-6 text-center">
+          Connexion à EcoRide
+        </h2>
 
-      <form
-        onSubmit={handleLogin}
-        className="flex flex-col gap-3 w-80 bg-white shadow-md rounded-2xl p-6"
-      >
-        <input
-          type="email"
-          placeholder="Email"
-          className="border p-2 rounded focus:ring-2 focus:ring-green-500 outline-none"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-400 outline-none"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-        <input
-          type="password"
-          placeholder="Mot de passe"
-          className="border p-2 rounded focus:ring-2 focus:ring-green-500 outline-none"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Mot de passe
+            </label>
+            <input
+              type="password"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-400 outline-none"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
 
-        {error && <p className="text-red-600 text-sm">{error}</p>}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2 rounded-lg transition"
+          >
+            {loading ? "Connexion..." : "Se connecter"}
+          </button>
+        </form>
 
-        <button
-          type="submit"
-          className="bg-green-600 text-white rounded p-2 hover:bg-green-700 transition"
-        >
-          Se connecter
-        </button>
-      </form>
+        <p className="text-center text-gray-500 mt-4 text-sm">
+          Pas encore de compte ?{" "}
+          <Link to="/register" className="text-emerald-600 font-semibold">
+            Créer un compte
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

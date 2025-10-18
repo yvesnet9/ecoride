@@ -7,3 +7,12 @@ node_modules
 dist
 coverage
 >>>>>>> 0b0962ff905b48ba92a3881220d46a203c2850fd
+# Ignorer les environnements virtuels Python
+venv/
+backend/python/venv/
+__pycache__/
+*.pyc
+
+# Ignorer les fichiers système
+.DS_Store
+Thumbs.db

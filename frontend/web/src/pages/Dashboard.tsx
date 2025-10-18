@@ -1,145 +1,59 @@
-// 🌿 src/pages/Dashboard.jsx – Tableau de bord utilisateur EcoRide
-import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
+// 🌿 src/pages/Dashboard.jsx
+import { useState } from "react";
+import { addFavorite } from "../api/favorites";
 import toast from "react-hot-toast";
-import AddTripForm from "../components/AddTripForm";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { Star } from "lucide-react";
 
 export default function Dashboard() {
-  const [ecoPoints, setEcoPoints] = useState(0);
-  const [trips, setTrips] = useState([]);
-  const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
 
-  // 🔄 Charger les trajets utilisateur
-  const fetchTrips = async () => {
+  // exemple de trajet par défaut
+  const [trip] = useState({
+    from: "Paris",
+    to: "Versailles",
+    distance: 17.5,
+    ecoPoints: 42,
+    coordinates: [
+      [48.8566, 2.3522],
+      [48.8049, 2.1204],
+    ],
+  });
+
+  const handleAddFavorite = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/trips", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        setTrips(data);
-        const total = data.reduce((sum, t) => sum + (t.ecoPoints || 0), 0);
-        setEcoPoints(total);
+      if (!token) {
+        toast.error("Veuillez vous connecter pour enregistrer un favori");
+        return;
       }
-    } catch (error) {
-      console.error("Erreur de chargement des trajets :", error);
+
+      await addFavorite(trip, token);
+      toast.success(`⭐ Favori ajouté : ${trip.from} → ${trip.to}`);
+    } catch (err) {
+      console.error(err);
+      toast.error("Erreur lors de l’ajout du favori");
     }
   };
 
-  useEffect(() => {
-    fetchTrips();
-  }, []);
-
-  // ⚡ WebSocket – mise à jour en temps réel
-  useEffect(() => {
-    const socket = io("http://localhost:5000");
-
-    socket.on(`ecoPointsUpdated-${user._id}`, (data) => {
-      toast.success(`${data.message} 🎉 (+${data.gained} pts)`);
-      setEcoPoints(data.total);
-    });
-
-    socket.on("newTripAdded", (data) => {
-      if (data.user === user.name) fetchTrips();
-    });
-
-    return () => socket.disconnect();
-  }, [user._id]);
-
-  // 📊 Données pour le graphe
-  const chartData = trips.map((t, index) => ({
-    name: `Trajet ${index + 1}`,
-    points: t.ecoPoints,
-  }));
-
   return (
-    <div className="max-w-5xl mx-auto p-6 bg-white shadow-lg rounded-xl mt-10">
-      {/* 🌱 En-tête */}
-      <h1 className="text-3xl font-bold text-green-700 mb-4">
-        🌱 Tableau de bord – {user?.name}
+    <div className="max-w-3xl mx-auto mt-24 px-4 text-center">
+      <h1 className="text-2xl font-bold text-[#1F2A44] mb-4">
+        Tableau de bord 🌍
       </h1>
 
-      <p className="text-lg mb-6">
-        Total ÉcoPoints :{" "}
-        <span className="font-semibold text-emerald-700">{ecoPoints}</span>
-      </p>
+      <div className="bg-white shadow rounded-2xl p-6 border border-gray-100">
+        <p className="text-lg font-semibold text-[#1F2A44] mb-2">
+          {trip.from} → {trip.to}
+        </p>
+        <p className="text-gray-600 mb-4">
+          {trip.distance} km — {trip.ecoPoints} écoPoints
+        </p>
 
-      {/* ➕ Formulaire d’ajout de trajet */}
-      <AddTripForm onTripAdded={fetchTrips} />
-
-      {/* 📈 Évolution des ÉcoPoints */}
-      <div className="mt-10">
-        <h2 className="text-xl font-semibold text-green-800 mb-4">
-          📊 Évolution de vos ÉcoPoints
-        </h2>
-
-        {chartData.length === 0 ? (
-          <p className="text-gray-500">Aucun trajet pour le moment.</p>
-        ) : (
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="points"
-                stroke="#16a34a"
-                strokeWidth={2}
-                activeDot={{ r: 6 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        )}
-      </div>
-
-      {/* 🧾 Historique des trajets */}
-      <div className="mt-10">
-        <h2 className="text-xl font-semibold text-green-800 mb-4">
-          🧾 Historique de vos trajets
-        </h2>
-
-        {trips.length === 0 ? (
-          <p className="text-gray-500">Aucun trajet enregistré.</p>
-        ) : (
-          <table className="w-full border-collapse text-left">
-            <thead>
-              <tr className="bg-green-50 text-green-800">
-                <th className="p-3 border-b">Origine</th>
-                <th className="p-3 border-b">Destination</th>
-                <th className="p-3 border-b">Distance (km)</th>
-                <th className="p-3 border-b">ÉcoPoints</th>
-                <th className="p-3 border-b">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {trips.map((trip) => (
-                <tr key={trip._id} className="hover:bg-green-50">
-                  <td className="p-3 border-b">{trip.origin}</td>
-                  <td className="p-3 border-b">{trip.destination}</td>
-                  <td className="p-3 border-b">{trip.distanceKm}</td>
-                  <td className="p-3 border-b text-green-700 font-semibold">
-                    +{trip.ecoPoints}
-                  </td>
-                  <td className="p-3 border-b">
-                    {new Date(trip.date).toLocaleDateString("fr-FR")}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+        <button
+          onClick={handleAddFavorite}
+          className="flex items-center justify-center gap-2 mx-auto bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded-full font-medium transition"
+        >
+          <Star className="w-4 h-4" /> Ajouter aux favoris
+        </button>
       </div>
     </div>
   );

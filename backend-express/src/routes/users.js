@@ -1,60 +1,63 @@
+// 🌿 routes/users.js – Routes liées aux utilisateurs EcoRide
 import express from "express";
+import {
+  registerUser,
+  loginUser,
+  getUserProfile,
+  getAllUsers,
+} from "../controllers/userController.js";
+import { protect, adminOnly } from "../middleware/authMiddleware.js";
 import User from "../models/User.js";
+import Trip from "../models/Trip.js";
 
 const router = express.Router();
 
-/**
- * 📋 Lister tous les utilisateurs
- * GET /api/users
- */
-router.get("/", async (req, res) => {
-  console.log("➡️  Requête GET /api/users reçue !");
+/* ====================================================
+   🔑 Authentification
+   ==================================================== */
+
+// 📝 Inscription
+router.post("/register", registerUser);
+
+// 🔐 Connexion
+router.post("/login", loginUser);
+
+// 👤 Profil utilisateur connecté
+router.get("/me", protect, getUserProfile);
+
+/* ====================================================
+   🧑‍💼 Gestion des utilisateurs (Admin)
+   ==================================================== */
+
+// 📋 Liste complète des utilisateurs
+router.get("/", protect, adminOnly, getAllUsers);
+
+// 📊 Statistiques globales du tableau de bord admin
+router.get("/stats/global", protect, adminOnly, async (req, res) => {
   try {
-    const users = await User.find();
-    console.log("✅ Utilisateurs récupérés :", users.length);
-    res.json(users);
+    const totalUsers = await User.countDocuments();
+    const totalTrips = await Trip.countDocuments();
+    const ecoStats = await User.aggregate([
+      { $group: { _id: null, totalEcoPoints: { $sum: "$ecoPoints" } } },
+    ]);
+
+    res.json({
+      totalUsers,
+      totalTrips,
+      totalEcoPoints: ecoStats[0]?.totalEcoPoints || 0,
+    });
   } catch (err) {
-    console.error("❌ Erreur GET /users :", err.message);
-    res
-      .status(500)
-      .json({ error: "Erreur lors de la récupération des utilisateurs" });
+    console.error("Erreur /stats/global :", err);
+    res.status(500).json({ message: "Erreur serveur" });
   }
 });
 
-/**
- * ➕ Ajouter un utilisateur
- * POST /api/users
- */
-router.post("/", async (req, res) => {
-  try {
-    const user = new User(req.body);
-    await user.save();
-    res
-      .status(201)
-      .json({ message: "✅ Utilisateur ajouté avec succès", user });
-  } catch (err) {
-    console.error("❌ Erreur lors de l’ajout utilisateur :", err.message);
-    res.status(400).json({ error: err.message });
-  }
-});
-
-/**
- * ❌ Supprimer un utilisateur
- * DELETE /api/users/:id
- */
-router.delete("/:id", async (req, res) => {
-  try {
-    const deletedUser = await User.findByIdAndDelete(req.params.id);
-    if (!deletedUser) {
-      return res.status(404).json({ message: "⚠️ Utilisateur non trouvé" });
-    }
-    res.json({ message: "🗑️ Utilisateur supprimé avec succès ✅" });
-  } catch (err) {
-    console.error("❌ Erreur suppression utilisateur :", err.message);
-    res
-      .status(500)
-      .json({ error: "Erreur lors de la suppression de l'utilisateur" });
-  }
+/* ====================================================
+   🌍 Fallback (non trouvée)
+   ==================================================== */
+router.use((req, res) => {
+  res.status(404).json({ message: "Route utilisateur non trouvée" });
 });
 
 export default router;
+

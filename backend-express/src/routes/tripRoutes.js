@@ -1,104 +1,112 @@
-// 🌿 routes/tripRoutes.js – Gestion des trajets
+// 🌿 src/routes/tripRoutes.js — Routes liées aux trajets EcoRide
 import express from "express";
+import { protect } from "../middleware/authMiddleware.js";
 import Trip from "../models/Trip.js";
-import User from "../models/User.js";
-import { protect, adminOnly } from "../middleware/authMiddleware.js";
+import {
+  createTrip,
+  getUserTrips,
+  simulateTrip,
+} from "../controllers/tripController.js";
 
 export default function tripRoutesFactory(io) {
   const router = express.Router();
 
-  // 🟢 Récupérer les trajets de l'utilisateur connecté
-  router.get("/", protect, async (req, res) => {
+  /* ============================================================
+     🚗 Création d’un trajet
+     ============================================================ */
+  router.post("/", protect, async (req, res) => {
+    console.log("🟢 [POST] /api/trips — Création d’un trajet");
     try {
-      const trips = await Trip.find({ user: req.user.id }).sort({ date: -1 });
-      res.json(trips);
-    } catch (error) {
-      console.error("❌ Erreur GET /api/trips :", error);
-      res
-        .status(500)
-        .json({ message: "Erreur lors du chargement des trajets." });
+      const trip = await createTrip(req, res, io);
+      if (trip) {
+        console.log("✅ Trajet créé avec succès :", trip._id);
+        return res.status(201).json(trip);
+      } else {
+        console.log("⚠️ Aucun trajet créé — contrôleur n’a rien renvoyé");
+        return res
+          .status(400)
+          .json({ message: "Impossible de créer le trajet ❌" });
+      }
+    } catch (err) {
+      console.error("💥 Erreur création trajet :", err);
+      res.status(500).json({ message: "Erreur interne serveur 💥" });
     }
   });
 
-  // 🟢 Récupérer tous les trajets (admin)
-  router.get("/all", protect, adminOnly, async (req, res) => {
+  /* ============================================================
+     👤 Récupération des trajets de l’utilisateur connecté
+     ============================================================ */
+  router.get("/mine", protect, async (req, res) => {
+    console.log(`🟢 [GET] /api/trips/mine — Utilisateur : ${req.user.email}`);
+    try {
+      const trips = await Trip.find({ user: req.user._id }).sort({ date: -1 });
+      console.log(`✅ ${trips.length} trajets trouvés`);
+      res.status(200).json(trips);
+    } catch (err) {
+      console.error("💥 Erreur getUserTrips :", err);
+      res.status(500).json({ message: "Erreur interne serveur 💥" });
+    }
+  });
+
+  /* ============================================================
+     📊 Liste de tous les trajets (admin ou debug)
+     ============================================================ */
+  router.get("/all", protect, async (req, res) => {
+    console.log("🟢 [GET] /api/trips/all — Liste complète (admin/dev)");
     try {
       const trips = await Trip.find()
-        .populate("user", "name email")
+        .populate("user", "name email role")
         .sort({ date: -1 });
-      res.json(trips);
-    } catch (error) {
-      console.error("❌ Erreur GET /api/trips/all :", error);
-      res
-        .status(500)
-        .json({ message: "Erreur lors du chargement des trajets." });
+
+      console.log(`✅ ${trips.length} trajets récupérés`);
+      res.status(200).json(trips);
+    } catch (err) {
+      console.error("💥 Erreur getAllTrips :", err);
+      res.status(500).json({ message: "Erreur interne serveur 💥" });
     }
   });
 
-  // 🟢 Ajouter un nouveau trajet (et incrémenter les écoPoints)
-  router.post("/", protect, async (req, res) => {
+  /* ============================================================
+     🌍 Recherche de trajets (par ville)
+     ============================================================ */
+  router.get("/search", async (req, res) => {
+    console.log("🟢 [GET] /api/trips/search — Recherche de trajets");
     try {
-      const { origin, destination, distanceKm } = req.body;
+      const { from, to } = req.query;
+      const query = {};
 
-      if (!origin || !destination || !distanceKm) {
-        return res.status(400).json({ message: "⚠️ Champs manquants" });
+      if (from) query.from = new RegExp(from, "i");
+      if (to) query.to = new RegExp(to, "i");
+
+      const trips = await Trip.find(query)
+        .populate("user", "name email")
+        .sort({ date: 1 });
+
+      if (trips.length === 0) {
+        console.log("⚠️ Aucun trajet trouvé pour la recherche");
+        return res.status(404).json({ message: "Aucun trajet trouvé." });
       }
 
-      const ecoPoints = Math.round(distanceKm * 2);
-
-      const newTrip = new Trip({
-        user: req.user.id,
-        origin,
-        destination,
-        distanceKm,
-        ecoPoints,
-        status: "planifié",
-        date: new Date(),
-      });
-
-      await newTrip.save();
-
-      // 🧮 Mise à jour des points utilisateur
-      const user = await User.findByIdAndUpdate(
-        req.user.id,
-        { $inc: { ecoPoints } },
-        { new: true }
-      );
-
-      // 📡 Émission WebSocket temps réel
-      io.emit("newTripAdded", {
-        user: user.name,
-        origin,
-        destination,
-        ecoPoints,
-      });
-
-      res.status(201).json({
-        message: `✅ Trajet ajouté (+${ecoPoints} écoPoints)`,
-        trip: newTrip,
-      });
+      console.log(`✅ ${trips.length} trajets trouvés`);
+      res.json(trips);
     } catch (err) {
-      console.error("❌ Erreur POST /api/trips :", err);
-      res.status(500).json({ message: "Erreur lors de l’ajout du trajet." });
+      console.error("💥 Erreur recherche trajets :", err);
+      res
+        .status(500)
+        .json({ message: "Erreur serveur lors de la recherche 💥" });
     }
   });
 
-  // 🗑️ Supprimer un trajet (admin uniquement)
-  router.delete("/:id", protect, adminOnly, async (req, res) => {
+  /* ============================================================
+     🧪 Simulation de trajet (test écoPoints)
+     ============================================================ */
+  router.post("/simulate", async (req, res) => {
+    console.log("🧪 [POST] /api/trips/simulate — Simulation de trajet");
     try {
-      const trip = await Trip.findById(req.params.id);
-      if (!trip)
-        return res.status(404).json({ message: "Trajet introuvable." });
-
-      await trip.deleteOne();
-      io.emit("tripDeleted", { id: req.params.id }); // 🔔 informe le dashboard admin
-
-      res.json({ message: "🗑️ Trajet supprimé avec succès." });
-    } catch (error) {
-      console.error("❌ Erreur suppression trajet :", error);
-      res
-        .status(500)
-        .json({ message: "Erreur lors de la suppression du trajet." });
+      await simulateTrip(req, res);
+    } catch (err) {
+      console.error("💥 Erreur simulation trajet :", err);
+      res.status(500).json({ message: "Erreur simulation trajet 💥" });
     }
   });
 

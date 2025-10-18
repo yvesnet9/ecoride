@@ -1,0 +1,131 @@
+// 🌿 src/pages/FavoritesPage.jsx
+import { useEffect, useState } from "react";
+import { getFavorites, deleteFavorite } from "../api/favorites";
+import { Trash2, Star, Map } from "lucide-react";
+import toast from "react-hot-toast";
+import FavoritesMap from "../components/FavoritesMap";
+import FavoriteDetailsPanel from "../components/FavoriteDetailsPanel";
+
+export default function FavoritesPage() {
+  const [favorites, setFavorites] = useState([]);
+  const [selectedFavorite, setSelectedFavorite] = useState(null);
+  const [simulation, setSimulation] = useState(null);
+  const [ecoProgress, setEcoProgress] = useState(0);
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (token) {
+      getFavorites(token)
+        .then(setFavorites)
+        .catch(() => toast.error("Erreur de chargement des favoris"));
+    }
+  }, [token]);
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteFavorite(id, token);
+      setFavorites(favorites.filter((f) => f._id !== id));
+      if (selectedFavorite?._id === id) setSelectedFavorite(null);
+      toast.success("Favori supprimé ❌");
+    } catch {
+      toast.error("Erreur lors de la suppression");
+    }
+  };
+
+  const handleStartTrip = (favorite) => {
+    if (!favorite.coordinates?.length) {
+      toast.error("Ce favori n’a pas de coordonnées !");
+      return;
+    }
+
+    toast.success(`🚗 Début du trajet ${favorite.from} → ${favorite.to}`);
+
+    // Démarre la simulation
+    setSimulation({
+      coordinates: favorite.coordinates,
+      onProgress: (progress) => setEcoProgress(progress),
+      onComplete: () => {
+        toast.success("🎉 Trajet terminé !");
+        setSimulation(null);
+        setEcoProgress(0);
+      },
+    });
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto mt-24 px-4 grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
+      <div>
+        <h1 className="text-2xl font-bold text-[#1F2A44] mb-6 flex items-center gap-2">
+          <Star className="text-yellow-400 w-6 h-6" /> Mes Favoris
+        </h1>
+
+        {favorites.length === 0 ? (
+          <p className="text-gray-500">Aucun favori pour le moment 🌱</p>
+        ) : (
+          <>
+            <ul className="space-y-4 mb-10">
+              {favorites.map((fav) => (
+                <li
+                  key={fav._id}
+                  className={`flex items-center justify-between p-4 bg-white shadow rounded-2xl border transition ${
+                    selectedFavorite?._id === fav._id
+                      ? "border-yellow-400 bg-yellow-50"
+                      : "border-gray-100"
+                  }`}
+                >
+                  <div>
+                    <p className="font-semibold text-[#1F2A44]">
+                      {fav.from} → {fav.to}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {fav.distance} km — {fav.ecoPoints} écoPoints
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() =>
+                        setSelectedFavorite(
+                          selectedFavorite?._id === fav._id ? null : fav
+                        )
+                      }
+                      className={`flex items-center gap-1 px-3 py-2 rounded-full text-sm font-medium transition ${
+                        selectedFavorite?._id === fav._id
+                          ? "bg-yellow-400 text-white"
+                          : "bg-gray-200 hover:bg-yellow-100"
+                      }`}
+                    >
+                      <Map className="w-4 h-4" />
+                      Voir sur la carte
+                    </button>
+                    <button
+                      onClick={() => handleDelete(fav._id)}
+                      className="text-red-500 hover:text-red-600 transition"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <FavoritesMap
+              favorites={favorites}
+              selectedFavorite={selectedFavorite}
+              simulation={simulation}
+            />
+          </>
+        )}
+      </div>
+
+      {/* 🌟 Panneau latéral */}
+      <div className="h-[600px] rounded-2xl bg-white shadow-md border border-gray-100 overflow-hidden">
+        <FavoriteDetailsPanel
+          favorite={selectedFavorite}
+          onDelete={handleDelete}
+          onStart={handleStartTrip}
+          ecoProgress={ecoProgress}
+        />
+      </div>
+    </div>
+  );
+}

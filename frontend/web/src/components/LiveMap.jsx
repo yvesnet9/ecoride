@@ -1,154 +1,103 @@
-// 🚗 LiveMap.jsx — Carte GPS en temps réel avec mode simulation amélioré
-import { useEffect, useState } from "react";
-import io from "socket.io-client";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+// 🌿 src/components/FavoritesMap.jsx
+import {
+  MapContainer,
+  TileLayer,
+  Polyline,
+  Marker,
+  Popup,
+  useMap,
+} from "react-leaflet";
+import { useEffect } from "react";
 import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import TripSimulation from "./TripSimulation";
 
-const socket = io("http://localhost:5000");
+// 🟢 Icônes de départ / arrivée
+const startIcon = L.divIcon({
+  html: "🟢",
+  className: "",
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
+});
 
-// 🧭 Icônes des véhicules
-const icons = {
-  user: new L.Icon({
-    iconUrl:
-      "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-  }),
-  others: new L.Icon({
-    iconUrl:
-      "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-  }),
-};
+const endIcon = L.divIcon({
+  html: "🔴",
+  className: "",
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
+});
 
-export default function LiveMap() {
-  const [activeDrivers, setActiveDrivers] = useState([]);
-  const [simulate, setSimulate] = useState(true); // 🧪 Simulation activée par défaut
-  const [position, setPosition] = useState({
-    lat: 48.8566,
-    lng: 2.3522,
-    name: "Yves",
-    vehicleType: "🚴",
-  });
+// 🌍 Sous-composant pour ajuster la vue quand un favori est sélectionné
+function FitToFavorite({ coordinates }) {
+  const map = useMap();
 
-  // ✅ Vérification de connexion Socket.io
   useEffect(() => {
-    socket.on("connect", () => {
-      console.log("✅ Connecté à Socket.io :", socket.id);
-    });
-    return () => socket.off("connect");
-  }, []);
-
-  // 🌍 Suivi GPS réel (si dispo)
-  useEffect(() => {
-    if (!simulate && navigator.geolocation) {
-      navigator.geolocation.watchPosition((pos) => {
-        const { latitude, longitude } = pos.coords;
-        setPosition((p) => ({ ...p, lat: latitude, lng: longitude }));
-
-        socket.emit("updateLocation", {
-          name: position.name,
-          lat: latitude,
-          lng: longitude,
-          vehicleType: position.vehicleType,
-        });
-      });
+    if (coordinates?.length > 1) {
+      const bounds = L.latLngBounds(coordinates);
+      map.fitBounds(bounds, { padding: [50, 50] });
     }
-  }, [simulate, position]);
+  }, [coordinates, map]);
 
-  // 🧪 Simulation automatique multi-véhicules
-  useEffect(() => {
-    if (simulate) {
-      const simulatedDrivers = [
-        { name: "Yves", vehicleType: "🚴", lat: 48.8566, lng: 2.3522 },
-        { name: "Léo", vehicleType: "🚗", lat: 48.8575, lng: 2.3422 },
-        { name: "Clara", vehicleType: "🛵", lat: 48.8526, lng: 2.3622 },
-      ];
+  return null;
+}
 
-      let tick = 0;
-      const interval = setInterval(() => {
-        const updated = simulatedDrivers.map((d, i) => ({
-          ...d,
-          lat: d.lat + Math.sin((tick + i * 20) / 50) * 0.0005,
-          lng: d.lng + Math.cos((tick + i * 20) / 50) * 0.0005,
-        }));
-        tick++;
-
-        // 🛰️ Envoi au serveur
-        updated.forEach((d) => {
-          socket.emit("updateLocation", {
-            name: d.name,
-            lat: d.lat,
-            lng: d.lng,
-            vehicleType: d.vehicleType,
-          });
-        });
-
-        // 🖥️ Affichage direct même sans retour du serveur
-        setActiveDrivers(updated);
-        console.log("📡 Positions simulées envoyées :", updated);
-      }, 1000);
-
-      return () => clearInterval(interval);
-    }
-  }, [simulate]);
-
-  // 🔄 Réception des conducteurs actifs
-  useEffect(() => {
-    socket.on("activeDrivers", (drivers) => {
-      console.log("🚗 Conducteurs reçus :", drivers);
-      setActiveDrivers(drivers);
-    });
-
-    return () => socket.off("activeDrivers");
-  }, []);
-
+export default function FavoritesMap({
+  favorites = [],
+  selectedFavorite,
+  simulation,
+}) {
   return (
-    <div className="mt-10 bg-green-50 rounded-xl shadow-inner p-4">
-      {/* En-tête */}
-      <div className="flex justify-between items-center mb-3">
-        <h3 className="text-lg font-semibold text-green-700">
-          🚘 Carte GPS en temps réel {simulate && "(simulation active)"}
-        </h3>
-        <button
-          onClick={() => setSimulate(!simulate)}
-          className={`px-4 py-1 rounded-full text-white ${
-            simulate ? "bg-red-500" : "bg-green-600"
-          }`}
-        >
-          {simulate ? "Désactiver" : "Activer"} la simulation
-        </button>
-      </div>
+    <MapContainer
+      center={[48.8566, 2.3522]}
+      zoom={11}
+      style={{ height: "600px", borderRadius: "16px" }}
+      className="shadow-md border border-gray-100"
+    >
+      <TileLayer
+        attribution="&copy; OpenStreetMap"
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
 
-      {/* Carte */}
-      <MapContainer
-        center={[position.lat, position.lng]}
-        zoom={14}
-        style={{ height: "400px", width: "100%", borderRadius: "12px" }}
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution="&copy; OpenStreetMap contributors"
+      {/* 🗺️ Tracés des trajets favoris */}
+      {favorites.map((fav) => (
+        <Polyline
+          key={fav._id}
+          positions={fav.coordinates}
+          color={selectedFavorite?._id === fav._id ? "orange" : "gray"}
+          weight={4}
         />
+      ))}
 
-        {activeDrivers.map((d, idx) => (
-          <Marker
-            key={idx}
-            position={[d.lat, d.lng]}
-            icon={d.name === "Yves" ? icons.user : icons.others}
-          >
-            <Popup>
-              <b>
-                {d.vehicleType} {d.name}
-              </b>
-              <br />
-              Lat: {d.lat.toFixed(5)}, Lng: {d.lng.toFixed(5)}
-            </Popup>
+      {/* 📍 Marqueurs de départ / arrivée */}
+      {selectedFavorite && selectedFavorite.coordinates.length > 0 && (
+        <>
+          <Marker position={selectedFavorite.coordinates[0]} icon={startIcon}>
+            <Popup>Départ : {selectedFavorite.from}</Popup>
           </Marker>
-        ))}
-      </MapContainer>
-    </div>
+          <Marker
+            position={
+              selectedFavorite.coordinates[
+                selectedFavorite.coordinates.length - 1
+              ]
+            }
+            icon={endIcon}
+          >
+            <Popup>Arrivée : {selectedFavorite.to}</Popup>
+          </Marker>
+
+          {/* Ajustement automatique du zoom sur le trajet */}
+          <FitToFavorite coordinates={selectedFavorite.coordinates} />
+        </>
+      )}
+
+      {/* 🚗 Simulation du trajet dynamique */}
+      {simulation?.coordinates?.length > 1 && (
+        <TripSimulation
+          coordinates={simulation.coordinates}
+          onProgress={simulation.onProgress}
+          onComplete={simulation.onComplete}
+          autoPan={true} // la carte suit la voiture
+        />
+      )}
+    </MapContainer>
   );
 }

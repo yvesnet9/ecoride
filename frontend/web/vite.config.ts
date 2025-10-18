@@ -1,11 +1,25 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// ✅ Configuration compatible WSL et Node 20+
+// 🌿 Vite + React + Proxy API EcoRide
 export default defineConfig({
   plugins: [react()],
-  server: { host: "0.0.0.0", port: 5173 },
-  build: {
-    sourcemap: false, // ⚡️ accélère le chargement
-  },
-});
+    server: {
+        port: 5173,
+            host: true,
+                proxy: {
+                      // 🔁 redirige toutes les requêtes /api vers le backend Express
+                            "/api": {
+                                    target: "http://localhost:5000",
+                                            changeOrigin: true,
+                                                    secure: false,
+                                                          },
+                                                              },
+                                                                },
+                                                                  resolve: {
+                                                                      alias: {
+                                                                            "@": "/src",
+                                                                                },
+                                                                                  },
+                                                                                  });
+                                                                                  

@@ -1,164 +1,154 @@
-// 🌿 routes/userRoutes.js – Authentification & gestion des utilisateurs
+// 🌿 backend/src/routes/Users.js
 import express from "express";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import dotenv from "dotenv";
 import User from "../models/User.js";
-import { protect, adminOnly } from "../middleware/authMiddleware.js";
+
+dotenv.config();
 
 const router = express.Router();
 
-// 🧩 Génère un token JWT
-const generateToken = (id, role) => {
-  return jwt.sign(
-    { id, role },
-    process.env.JWT_SECRET || "super_secret_key_ecoRide_2025",
-    { expiresIn: "3h" } // ⏰ session un peu plus longue
-  );
+/* ====================================================
+   🔐 Middleware d’authentification par token (protect)
+   ==================================================== */
+const protect = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Non autorisé : token manquant" });
+    }
+
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id).select("-password");
+
+    if (!req.user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    next();
+  } catch (err) {
+    console.error("Erreur middleware protect:", err);
+    res.status(401).json({ message: "Token invalide ou expiré" });
+  }
 };
 
 /* ====================================================
-   🧾 1️⃣ Inscription utilisateur
+   🔑 Middleware Admin
    ==================================================== */
-router.post("/register", async (req, res) => {
-  try {
-    const { name, email, password, role } = req.body;
-
-    // Vérifie si l'email existe déjà
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res
-        .status(400)
-        .json({ message: "⚠️ Cet email est déjà utilisé." });
-    }
-
-    // Création du nouvel utilisateur
-    const user = await User.create({
-      name,
-      email,
-      password, // hash fait automatiquement dans le modèle
-      role: role || "user",
-    });
-
-    const token = generateToken(user._id, user.role);
-
-    res.status(201).json({
-      message: "✅ Inscription réussie.",
-      user,
-      token,
-    });
-  } catch (error) {
-    console.error("❌ Erreur lors de l’inscription :", error);
-    res.status(500).json({ message: "Erreur serveur pendant l’inscription." });
+const isAdmin = (req, res, next) => {
+  if (req.user && req.user.role === "admin") {
+    next();
+  } else {
+    res
+      .status(403)
+      .json({ message: "Accès refusé : rôle administrateur requis" });
   }
-});
+};
 
 /* ====================================================
-   🔐 2️⃣ Connexion utilisateur
+   👤 Connexion utilisateur (POST /api/users/login)
    ==================================================== */
 router.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
+  try {
     const user = await User.findOne({ email });
     if (!user)
-      return res.status(401).json({ message: "❌ Identifiants incorrects." });
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
 
-    const isMatch = await user.comparePassword(password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
-      return res.status(401).json({ message: "❌ Identifiants incorrects." });
+      return res.status(401).json({ message: "Mot de passe incorrect" });
 
-    const token = generateToken(user._id, user.role);
-
-    res.json({
-      message: "✅ Connexion réussie.",
-      user,
-      token,
-    });
-  } catch (error) {
-    console.error("❌ Erreur de connexion :", error);
-    res.status(500).json({ message: "Erreur lors de la connexion." });
-  }
-});
-
-/* ====================================================
-   🧠 3️⃣ Vérification du token (session active)
-   ==================================================== */
-router.get("/check", protect, async (req, res) => {
-  res.json({
-    message: "✅ Session valide.",
-    user: req.user,
-  });
-});
-
-/* ====================================================
-   👑 4️⃣ Route test admin-only
-   ==================================================== */
-router.get("/admin-only", protect, adminOnly, (req, res) => {
-  res.json({
-    message: "👑 Accès admin autorisé.",
-  });
-});
-
-/* ====================================================
-   📋 5️⃣ Liste de tous les utilisateurs (admin)
-   ==================================================== */
-router.get("/", protect, adminOnly, async (req, res) => {
-  try {
-    const users = await User.find().select("-password").sort({ createdAt: -1 });
-    res.json(users);
-  } catch (error) {
-    console.error("❌ Erreur lors du chargement des utilisateurs :", error);
-    res.status(500).json({
-      message: "Erreur lors du chargement des utilisateurs.",
-    });
-  }
-});
-
-/* ====================================================
-   🗑️ 6️⃣ Supprimer un utilisateur (admin)
-   ==================================================== */
-router.delete("/:id", protect, adminOnly, async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user)
-      return res.status(404).json({ message: "Utilisateur introuvable." });
-
-    await user.deleteOne();
-
-    res.json({ message: "🗑️ Utilisateur supprimé avec succès." });
-  } catch (error) {
-    console.error("❌ Erreur suppression utilisateur :", error);
-    res.status(500).json({ message: "Erreur lors de la suppression." });
-  }
-});
-
-/* ====================================================
-   📊 7️⃣ Statistiques globales (admin dashboard)
-   ==================================================== */
-router.get("/stats/global", protect, adminOnly, async (req, res) => {
-  try {
-    const totalUsers = await User.countDocuments();
-    const users = await User.find();
-
-    const totalEcoPoints = users.reduce(
-      (sum, u) => sum + (u.ecoPoints || 0),
-      0
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "2h" }
     );
 
-    // 🔁 Import dynamique pour éviter import circulaire
-    const Trip = (await import("../models/Trip.js")).default;
-    const totalTrips = await Trip.countDocuments();
-
     res.json({
-      totalUsers,
-      totalTrips,
-      totalEcoPoints,
+      message: "✅ Connexion réussie",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        ecoPoints: user.ecoPoints,
+      },
     });
-  } catch (error) {
-    console.error("❌ Erreur stats globales :", error);
-    res.status(500).json({
-      message: "Erreur lors du chargement des statistiques globales.",
-    });
+
+    console.log(`👤 Connexion réussie : ${user.email} (${user.role})`);
+  } catch (err) {
+    console.error("❌ Erreur lors de la connexion :", err.message);
+    res.status(500).json({ message: "Erreur interne serveur" });
   }
+});
+
+/* ====================================================
+   ➕ Inscription utilisateur (POST /api/users/register)
+   ==================================================== */
+router.post("/register", async (req, res) => {
+  const { name, email, password } = req.body;
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Utilisateur déjà existant" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      role: "user",
+      ecoPoints: 0,
+    });
+
+    res.status(201).json({
+      message: "✅ Utilisateur créé avec succès",
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+        ecoPoints: newUser.ecoPoints,
+      },
+    });
+
+    console.log(`🆕 Nouvel utilisateur créé : ${email}`);
+  } catch (err) {
+    console.error("❌ Erreur lors de l’inscription :", err.message);
+    res.status(500).json({ message: "Erreur interne serveur" });
+  }
+});
+
+/* ====================================================
+   📋 Récupérer tous les utilisateurs (Admin)
+   ==================================================== */
+router.get("/", protect, isAdmin, async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    res.json(users);
+    console.log(
+      `👀 Admin ${req.user.email} a consulté la liste des utilisateurs`
+    );
+  } catch (err) {
+    console.error("❌ Erreur GET /api/users :", err.message);
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la récupération des utilisateurs" });
+  }
+});
+
+/* ====================================================
+   🔍 Profil utilisateur connecté
+   ==================================================== */
+router.get("/me", protect, async (req, res) => {
+  res.json(req.user);
 });
 
 export default router;

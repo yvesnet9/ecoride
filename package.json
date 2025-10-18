@@ -1,20 +1,15 @@
 {
   "name": "ecoride-monorepo",
-  "private": true,
   "version": "1.0.0",
-  "type": "module",
+  "private": true,
   "scripts": {
-    "dev": "concurrently -n web,api -c blue,magenta \"npm --prefix apps/web run dev\" \"npm --prefix apps/api run start:dev\"",
-    "start:web": "npm --prefix apps/web run dev",
-    "start:api": "npm --prefix apps/api run start:dev",
-    "build": "npm --prefix apps/web run build && npm --prefix apps/api run build",
-    "lint": "eslint .",
-    "test": "npm --prefix apps/web run test && npm --prefix apps/api run test"
+    "dev": "concurrently -n web,api -c blue,magenta \"npm --prefix frontend run dev\" \"npm --prefix backend-express run dev\"",
+    "web": "npm --prefix frontend run dev",
+    "api": "npm --prefix backend-express run dev",
+    "install:all": "npm install --prefix frontend && npm install --prefix backend-express"
   },
   "devDependencies": {
-    "concurrently": "^9.2.1",
-    "eslint": "^9.0.0",
-    "typescript": "^5.9.3",
-    "vite": "^7.1.9"
+    "concurrently": "^9.0.0"
   }
 }
+

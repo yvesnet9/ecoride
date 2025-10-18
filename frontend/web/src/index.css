@@ -1,35 +1,21 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* 🌟 Animation douce du menu mobile */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@theme {
+  --color-eco-green: #16a34a;
+  --color-eco-dark: #14532d;
+  --color-eco-light: #dcfce7;
 }
 
-.animate-fadeIn {
-  animation: fadeIn 0.3s ease-in-out;
+/* 🚗 Style de base du marqueur voiture */
+.car-marker {
+  font-size: 28px;
+  line-height: 1;
+  transition: transform 0.2s linear;
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
 }
-
-/* 💡 Optionnel : effet d’apparition globale au chargement */
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.fade-up {
-  animation: fadeUp 0.8s ease-out;
+.car-marker {
+  font-size: 28px;
+  line-height: 1;
+  transition: transform 0.2s linear;
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
 }
