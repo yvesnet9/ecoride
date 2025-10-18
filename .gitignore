@@ -1,18 +1,101 @@
-<<<<<<< HEAD
-node_modules
-=======
-node_modules
+# =====================================================
+# 🌿 EcoRide - Fichier .gitignore
+# =====================================================
+# Empêche de pousser sur GitHub les fichiers inutiles
+# ou sensibles pour un projet React + Node + Python
+# =====================================================
+
+# -------------------------------
+# 🧠 Node / Express
+# -------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
 .env
-.env.*
-dist
-coverage
->>>>>>> 0b0962ff905b48ba92a3881220d46a203c2850fd
-# Ignorer les environnements virtuels Python
+.env.local
+.env.*.local
+.vercel/
+.vscode/
+.DS_Store
+Thumbs.db
+logs
+*.log
+coverage/
+
+# -------------------------------
+# ⚛️ React / Vite
+# -------------------------------
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.eslintcache
+
+# -------------------------------
+# 🐍 Python
+# -------------------------------
 venv/
 backend/python/venv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.egg-info/
+*.egg
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
 
-# Ignorer les fichiers système
+# -------------------------------
+# 📦 Autres outils et fichiers système
+# -------------------------------
+.idea/
+*.swp
+*.swo
+*.bak
+*.tmp
+*.old
+ehthumbs.db
+Desktop.ini
+
+# -------------------------------
+# 🧪 Tests et scripts
+# -------------------------------
+tests/__pycache__/
+tests/backend/__pycache__/
+tests/frontend/__pycache__/
+scripts/__pycache__/
+coverage/
+reports/
+jest-html-reporters-*.html
+
+# -------------------------------
+# 💾 Base de données locale
+# -------------------------------
+*.db
+*.sqlite
+mongo-data/
+data/
+
+# -------------------------------
+# 💻 OS et IDE
+# -------------------------------
+.vscode/
 .DS_Store
-Thumbs.db
+*.iml
+*.sublime-workspace
+*.sublime-project
+
+# -------------------------------
+# 🔐 Sécurité
+# -------------------------------
+secrets.txt
+*.pem
+*.key
+*.crt
